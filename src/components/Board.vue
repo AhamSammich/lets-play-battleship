@@ -8,9 +8,9 @@ import { Socket } from "socket.io-client";
 import { checkSuccess, addTimestamp } from "../utils.ts";
 
 const props = defineProps<{
-  owner: string,
+  owner: string;
   socket: Socket;
-  actions: string[],
+  actions: string[];
 }>();
 
 let actionCount = ref(0);
@@ -26,33 +26,33 @@ function isValidResult(result: any): boolean {
   return ["hit", "miss"].includes(result);
 }
 
-function sendTargetId(targetId: string): void {
-  const targetElement: any = document.getElementById(targetId);
-  if (targetElement == null) return;
-  if (targetElement?.hasAttribute("checked")) return;
-  props.socket.emit("attack", addTimestamp(`Incoming fire at ${targetId}`), props.socket.id);
+function sendTargetId(targetId: string | null): void {
+  if (targetId == null) return;
+  props.socket.emit(
+    "attack",
+    addTimestamp(`Incoming fire at ${targetId}`),
+    props.socket.id
+  );
 }
 
 props.socket.on("incoming-attack", (data: string, opponentId: string) => {
-    if (opponentId === props.socket.id) return;
-    if (opponent == undefined) registerOpponent(opponentId);
-    console.log(`Received: ${data}`);
-    let targetId = data.split("at ")[1].trim();
-    checkForHit(targetId);
-})
+  if (opponentId === props.socket.id) return;
+  if (opponent == undefined) registerOpponent(opponentId);
+  let targetId = data.split("at ")[1].trim();
+  checkForHit(targetId);
+});
 
-//TODO: Implement actual ship position data.
-function checkForHit(targetId: string): string | void {
+function checkForHit(targetId: string): void {
+  //TODO: Implement actual ship position data.
   const result = checkSuccess(50) ? "hit" : "miss";
   let resultData = `${result.toUpperCase()} at ${targetId}`;
-  props.actions.unshift(addTimestamp(`Opponent ${resultData}`));
-  actionCount.value++;
   sendHitOrMiss(resultData);
 }
 
 function sendHitOrMiss(resultData: string): void {
+  props.actions.unshift(addTimestamp(`Opponent ${resultData}`));
+  actionCount.value++;
   props.socket.emit("attack-result", resultData, opponent);
-  console.log(resultData);
 }
 
 props.socket.on("incoming-result", (data: string) => {
@@ -60,7 +60,7 @@ props.socket.on("incoming-result", (data: string) => {
   let result = resultData[0].replace(" at ", "").trim();
   let targetId = resultData[1].trim();
   updateBoard(targetId, result.toLowerCase());
-})
+});
 
 function updateBoard(targetId: string, result: string): void {
   if (!isValidResult(result)) return;
@@ -70,7 +70,6 @@ function updateBoard(targetId: string, result: string): void {
   props.actions.unshift(addTimestamp(`${result.toUpperCase()} at (${targetElement.id})`));
   actionCount.value++;
 }
-
 </script>
 
 <template>
@@ -84,15 +83,14 @@ function updateBoard(targetId: string, result: string): void {
       <div class="row" :data-row="y">
         <template v-for="x in 10">
           <TargetSpace
-            :column=x
-            :row=y
-            @attack="(id: string) => sendTargetId(id)"
+            :column="x"
+            :row="y"
+            @attack="(id: string | null) => sendTargetId(id)"
           />
         </template>
       </div>
     </template>
-  <ActionLog :actionCount=actionCount :actions="actions" />
-  
+    <ActionLog :actionCount="actionCount" :actions="actions" />
   </section>
 </template>
 
@@ -133,5 +131,4 @@ ul.header {
   margin-right: -2.5em;
   vertical-align: middle;
 }
-
 </style>

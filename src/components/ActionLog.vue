@@ -16,8 +16,8 @@ function toggleFullLog() {
   let log = document.querySelector(".expanded");
   let items = log ? Array.from(log.children) : null;
   log?.toggleAttribute("hidden");
-  document.querySelector('#arrow')?.classList.toggle("rot-180");
-  items?.[items.length-1].scrollIntoView();
+  document.querySelector("#arrow")?.classList.toggle("rot-180");
+  items?.[items.length - 1].scrollIntoView();
 }
 
 function getResultFromMsg(msg?: string): string | void {
@@ -27,29 +27,34 @@ function getResultFromMsg(msg?: string): string | void {
 
 <template>
   <section class="log" id="action-log">
-  
     <!-- Show most recent action at bottom of viewport -->
     <div class="collapsed" @pointerup="toggleFullLog()">
-      <img src="../assets/history-line.png" alt="history" style="height: 2em;" />
+      <img src="../assets/history-line.png" alt="history" style="height: 2em" />
       <p>{{ removeTimestamp(actions?.[0]) }}</p>
-      <img id="arrow" class="rot-180" src="../assets/chevron-top.png" alt="expand" style="height: 1em;" />
+      <img
+        id="arrow"
+        class="rot-180"
+        src="../assets/chevron-top.png"
+        alt="expand"
+        style="height: 1em"
+      />
     </div>
 
     <!-- Show full log as overlay -->
     <ul class="expanded" hidden>
       <template v-for="i in actionCount">
-        <li 
-          :data-time="getTimestamp(sortedActions()[i-1])" 
-          :class="getResultFromMsg(sortedActions()[i-1])">{{ removeTimestamp(sortedActions()[i-1]) }}
-          </li>
+        <li
+          :data-time="getTimestamp(sortedActions()[i - 1])"
+          :class="getResultFromMsg(sortedActions()[i - 1])"
+        >
+          {{ removeTimestamp(sortedActions()[i - 1]) }}
+        </li>
       </template>
     </ul>
-
   </section>
 </template>
 
 <style scoped>
-
 .log {
   font-size: large;
   width: 100%;
@@ -94,23 +99,23 @@ li {
 }
 
 li::after {
-    content: attr(data-time);
-    font-size: small;
-    padding: 0.2em;
-    color: palegoldenrod;
-    background-color: #333;
-    border-radius: 10%;
-    vertical-align: middle;
-    float: right;
+  content: attr(data-time);
+  font-size: small;
+  padding: 0.2em;
+  color: palegoldenrod;
+  background-color: #333;
+  border-radius: 10%;
+  vertical-align: middle;
+  float: right;
 }
 
 .expanded::-webkit-scrollbar {
-    background-color: hsl(0, 0%, 20%);
-    width: 0.5rem;
+  background-color: hsl(0, 0%, 20%);
+  width: 0.5rem;
 }
 
 .expanded::-webkit-scrollbar-thumb {
-    background-color: white;
+  background-color: white;
 }
 img {
   max-height: inherit;
