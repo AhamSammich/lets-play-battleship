@@ -1,0 +1,50 @@
+// Represent a space/square on the game board. // Space can be occupied by a Ship. //
+Player can click to resolve in a hit or miss. // Player can hover to see details.
+<script setup lang="ts">
+const props = defineProps<{
+  row: number,
+  column: number,
+  result?: string,
+}>();
+
+const emits = defineEmits(["targeting", "attack"]);
+
+const id: string = `${props.column}-${props.row}`;
+
+// Send the selected TargetSpace id over socket
+function sendTargetData() {}
+</script>
+
+<template>
+  <div :id="id" :class="result" @pointerover="$emit('targeting', result)" @pointerup="$emit('attack', id)"></div>
+</template>
+
+<style scoped>
+div {
+  width: clamp(30px, calc(100vw / 15), 40px);
+  aspect-ratio: 1/1;
+  background-color: cornflowerblue;
+  border: 0.05em solid white;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+div:hover {
+  box-shadow: 
+    inset 0 0  0.5em 0.1em hsla(0, 0%, 20%, 0.3),
+    inset 0 0  0.5em 0.5em palegoldenrod
+    ;
+}
+
+.hit {
+  background-color: firebrick;
+}
+
+.miss {
+  background-color: whitesmoke;
+}
+</style>
