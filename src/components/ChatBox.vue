@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Socket } from "socket.io-client";
 import { nextTick, ref } from "vue";
-//@ts-ignore
+//@ts-ignore An import path cannot end with a '.ts' extension. Consider importing '../utils.js' instead.ts(2691)
 import { Message } from "../utils.ts";
 
 const props = defineProps<{
@@ -77,61 +77,71 @@ async function updateChat(json: string) {
   bottom: calc(0vh + 3rem);
 }
 .chat-log {
-  font-size: medium;
+  font-size: large;
   width: 100%;
   height: 8em;
-  background-color: hsla(0, 0%, 20%, 0.8);
   color: palegoldenrod;
-  overflow-y: scroll;
+  background-color: hsla(0, 0%, 20%, 0.8);
+  padding: 0.25em;
   display: flex;
   flex-direction: column;
   gap: 0.2em;
+  overflow-y: scroll;
   text-align: left;
-  padding: 0.25em;
   list-style: none;
 }
 
-li {
-  padding: 0.1em;
+::after, ::before {
+  display: block;
+  width: fit-content;
+  padding: 0.2em 0.5em;
+  border-radius: 0.5em;
 }
 
-/* li[from="server"] {
-  color: whitesmoke;
+li {
+  width: fit-content;
+  padding: 0.5em;
+  border-radius: 0.5em;
+  background-color: #333;
+  color: white;
+}
+
+li::after {
+  content: attr(data-time);
+  font-size: x-small;
+  color: seashell;
+  margin-left: 1em;
+}
+
+li::before {
+  content: attr(from);
+  font-size: xx-small;
+  font-weight: bold;
+  color: #333;
+  background-color: palegoldenrod;
+  margin-bottom: 0.5em;
+}
+
+li[from="server"],
+li[from="server"]::after {
+  color: lightgray;
+  background-color: transparent;
+}
+
+li[from="server"]::before {
+  color: #333;
+  background-color: white;
 }
 
 li[from="Me"] {
-  text-align: right;
-  color: palegreen;
-} */
-
-li::before {
-  content: attr(data-time);
-  font-size: x-small;
-  margin-right: 0.5em;
-  padding: 0.2em;
-  color: white;
-  background-color: #333;
-  border-radius: 0.3em;
-  vertical-align: middle;
-  float: left;
+  color: palegoldenrod;
+  background-color: steelblue;
+  align-self: flex-end;
 }
 
-li:not([from="Me"])::after {
-  content: attr(from);
-  font-size: x-small;
-  margin-left: 0.5em;
-  padding: 0.2em;
-  color: white;
-  background-color: seagreen;
-  border-radius: 0.3em;
-  vertical-align: middle;
+li[from="Me"]::before {
+  display: none;
 }
-
-li[from="server"]::after {
-  background-color: white;
-  color: seagreen;
-}
-
 .chat-log::-webkit-scrollbar {
   background-color: hsl(0, 0%, 20%);
   width: 0.5rem;
