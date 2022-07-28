@@ -5,7 +5,7 @@ const props = defineProps<{
   result?: string;
 }>();
 
-const emits = defineEmits(["attack"]);
+defineEmits(["attack"]);
 
 const id: string = `${props.column}-${props.row}`;
 let checked = false;
@@ -26,7 +26,7 @@ function emitTargetId(): string | void {
 div {
   width: clamp(30px, calc(100vw / 15), 40px);
   aspect-ratio: 1/1;
-  background-color: cornflowerblue;
+  background-color: steelblue;
   border: 0.05em solid white;
   border-radius: 3px;
   cursor: pointer;

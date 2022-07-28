@@ -3,16 +3,18 @@ import Board from "./components/Board.vue";
 import NavBar from "./components/NavBar.vue";
 import ChatBox from "./components/ChatBox.vue";
 import io from "socket.io-client";
+import { ref } from "vue";
 
 const socket = io("http://localhost:5500");
+const fullChat = ref(false);
 </script>
 
 <template>
   <section class="play-area">
     <Board owner="Player-1" :socket="socket" :actions="[]" />
   </section>
-  <ChatBox :socket="socket" :messages="[]" />
-  <NavBar position="bottom" />
+  <ChatBox :socket="socket" :expanded="fullChat" />
+  <NavBar position="bottom" @toggle-chat="() => (fullChat = !fullChat)" />
 </template>
 
 <style>

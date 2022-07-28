@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { Socket } from "socket.io-client";
-import { nextTick, ref } from "vue";
+import { ref, Ref, onUpdated } from "vue";
 //@ts-ignore An import path cannot end with a '.ts' extension. Consider importing '../utils.js' instead.ts(2691)
 import { Message } from "../utils.ts";
 
 const props = defineProps<{
   socket: Socket;
-  messages: string[];
+  expanded: boolean;
 }>();
 
-let msgCount = ref(0);
-let players: Record<string, string> = { server: "server" };
+const msgCount = ref(0);
+const messages: Ref<string[]> = ref([]);
+const players: Record<string, string> = { server: "server" };
 
 function registerPlayer(id: string) {
   if (Object.keys(players).includes(id)) return;
@@ -40,16 +41,18 @@ props.socket.on("server-info", (json: string) => {
 });
 
 async function updateChat(json: string) {
-  props.messages.push(json);
+  messages.value.push(json);
   msgCount.value++;
-  await nextTick();
-  Message.showLast(".chat-log");
 }
+
+onUpdated(() => {
+  setTimeout(() => Message.showLast(".chat-log"), 200);
+});
 </script>
 
 <template>
   <section id="chat">
-    <ul class="chat-log" :count="msgCount">
+    <ul class="chat-log" :count="msgCount" :expanded="expanded">
       <template v-for="i in messages?.length">
         <li
           :data-time="Message.parse(messages?.[i - 1], 'timestamp')"
@@ -81,17 +84,25 @@ async function updateChat(json: string) {
   width: 100%;
   height: 8em;
   color: palegoldenrod;
-  background-color: hsla(0, 0%, 20%, 0.8);
-  padding: 0.25em;
+  background-color: hsla(0, 0%, 20%, 0.7);
+  padding: 0.5em 1em;
   display: flex;
   flex-direction: column;
   gap: 0.2em;
   overflow-y: scroll;
   text-align: left;
   list-style: none;
+  transition: height 100ms linear,
+    background-color 300ms linear;
 }
 
-::after, ::before {
+.chat-log[expanded="true"] {
+  height: calc(100vh - 5rem);
+  background-color: hsla(0, 0%, 20%, 0.85);
+}
+
+::after,
+::before {
   display: block;
   width: fit-content;
   padding: 0.2em 0.5em;
@@ -100,17 +111,18 @@ async function updateChat(json: string) {
 
 li {
   width: fit-content;
-  padding: 0.5em;
-  border-radius: 0.5em;
-  background-color: #333;
+  padding: 0.5em 0.75em;
   color: white;
+  background-color: #333;
+  border-radius: 0.5em;
 }
 
 li::after {
   content: attr(data-time);
+  width: 100%;
   font-size: x-small;
   color: seashell;
-  margin-left: 1em;
+  text-align: right;
 }
 
 li::before {
@@ -118,7 +130,7 @@ li::before {
   font-size: xx-small;
   font-weight: bold;
   color: #333;
-  background-color: palegoldenrod;
+  background-color: lightgoldenrodyellow;
   margin-bottom: 0.5em;
 }
 
@@ -134,7 +146,7 @@ li[from="server"]::before {
 }
 
 li[from="Me"] {
-  color: palegoldenrod;
+  color: lightgoldenrodyellow;
   background-color: steelblue;
   align-self: flex-end;
 }
@@ -148,12 +160,14 @@ li[from="Me"]::before {
 }
 
 .chat-log::-webkit-scrollbar-thumb {
-  background-color: white;
+  background-color: lightgoldenrodyellow;
 }
 
 input {
   width: 100%;
-  max-height: 2rem;
+  height: 2rem;
   padding: 0.25rem;
+  background-color: ghostwhite;
+  border: 3px inset whitesmoke;
 }
 </style>

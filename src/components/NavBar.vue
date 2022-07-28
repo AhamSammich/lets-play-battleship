@@ -1,14 +1,15 @@
 <script setup lang="ts">
-//TODO: Add full chat toggle function.
 const props = defineProps<{
   position: "top" | "bottom" | "left" | "right";
 }>();
+
+defineEmits(["toggle-chat"]);
 </script>
 
 <template>
   <nav>
     <img src="../assets/settings-gear.png" alt="config" />
-    <img src="../assets/chat-box.png" alt="chat" />
+    <img src="../assets/chat-box.png" alt="chat" @pointerup="$emit('toggle-chat')"/>
     <img src="../assets/book-question.png" alt="help" />
   </nav>
 </template>
@@ -19,7 +20,7 @@ nav {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  max-height: 3rem;
+  height: 3rem;
   width: 100%;
   background-color: rgba(51, 51, 51, 0.5);
   color: ghostwhite;
@@ -29,7 +30,7 @@ nav {
 }
 
 img {
-  max-height: inherit;
+  height: inherit;
   transform: scale(0.75);
   cursor: pointer;
 }
