@@ -73,13 +73,13 @@ function updateBoard(targetId: string, result: string): void {
 <template>
   <section :id="owner">
     <ul class="header">
-      <template v-for="x in 10">
+      <template v-for="x in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']">
         <li>{{ x }}</li>
       </template>
     </ul>
     <template v-for="y in 10">
       <div class="row" :data-row="y">
-        <template v-for="x in 10">
+        <template v-for="x in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']">
           <TargetSpace
             :column="x"
             :row="y"
@@ -102,7 +102,7 @@ section {
 
 ul.header {
   width: 100%;
-  font-size: large;
+  font-size: medium;
   font-weight: bold;
   color: hsl(0, 0%, 20%);
   padding-bottom: 0.5em;
