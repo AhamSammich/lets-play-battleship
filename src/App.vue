@@ -1,30 +1,17 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import Board from "./components/Board.vue";
 import NavBar from "./components/NavBar.vue";
 import ChatBox from "./components/ChatBox.vue";
 import io from "socket.io-client";
-//@ts-ignore
-import { addTimestamp } from "../src/utils.ts";
 
-const socket = io('http://localhost:5500');
-
-
+const socket = io("http://localhost:5500");
 </script>
 
 <template>
   <section class="play-area">
-    <Board 
-      owner="Player-1" 
-      :socket=socket
-      :actions="[]" 
-      />
+    <Board owner="Player-1" :socket="socket" :actions="[]" />
   </section>
-  <ChatBox 
-    :socket=socket
-    :messages="[addTimestamp('Connected to chat.')]"
-    />
+  <ChatBox :socket="socket" :messages="[]" />
   <NavBar position="bottom" />
 </template>
 
@@ -51,7 +38,6 @@ body {
   background-color: hsl(0, 0%, 85%);
   display: grid;
   grid-template-rows: max-content 1fr max-content;
-
 }
 
 .play-area {

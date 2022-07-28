@@ -5,7 +5,7 @@ import ActionLog from "./ActionLog.vue";
 import { ref } from "vue";
 import { Socket } from "socket.io-client";
 // @ts-ignore
-import { checkSuccess, addTimestamp } from "../utils.ts";
+import { checkSuccess, Message } from "../utils.ts";
 
 const props = defineProps<{
   owner: string;
@@ -28,37 +28,37 @@ function isValidResult(result: any): boolean {
 
 function sendTargetId(targetId: string | null): void {
   if (targetId == null) return;
-  props.socket.emit(
-    "attack",
-    addTimestamp(`Incoming fire at ${targetId}`),
-    props.socket.id
-  );
+  props.socket.emit("attack", Message.format(targetId, props.socket.id));
 }
 
-props.socket.on("incoming-attack", (data: string, opponentId: string) => {
+props.socket.on("incoming-attack", (json) => {
+  let opponentId: string = Message.parse(json, "from");
   if (opponentId === props.socket.id) return;
   if (opponent == undefined) registerOpponent(opponentId);
-  let targetId = data.split("at ")[1].trim();
+  let targetId: string = Message.parse(json, "message");
   checkForHit(targetId);
 });
 
 function checkForHit(targetId: string): void {
   //TODO: Implement actual ship position data.
   const result = checkSuccess(50) ? "hit" : "miss";
-  let resultData = `${result.toUpperCase()} at ${targetId}`;
-  sendHitOrMiss(resultData);
+  let resultMsg = `${result.toUpperCase()} at ${targetId}`;
+  sendHitOrMiss(resultMsg);
 }
 
-function sendHitOrMiss(resultData: string): void {
-  props.actions.unshift(addTimestamp(`Opponent ${resultData}`));
+function sendHitOrMiss(resultMsg: string): void {
+  let resultData = Message.format(resultMsg, props.socket.id);
+  props.actions.unshift(Message.format(`Opponent ${resultMsg}`));
   actionCount.value++;
   props.socket.emit("attack-result", resultData, opponent);
 }
 
-props.socket.on("incoming-result", (data: string) => {
-  let resultData = data.split(" at ");
+props.socket.on("incoming-result", (json: string) => {
+  let resultData = Message.parse(json, "message").split(" at ");
   let result = resultData[0].replace(" at ", "").trim();
   let targetId = resultData[1].trim();
+  props.actions.unshift(json);
+  actionCount.value++;
   updateBoard(targetId, result.toLowerCase());
 });
 
@@ -67,8 +67,6 @@ function updateBoard(targetId: string, result: string): void {
   const targetElement: any = document.getElementById(targetId);
   targetElement.classList.add(result);
   targetElement.setAttribute("checked", "");
-  props.actions.unshift(addTimestamp(`${result.toUpperCase()} at (${targetElement.id})`));
-  actionCount.value++;
 }
 </script>
 

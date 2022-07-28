@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // @ts-ignore
-import { removeTimestamp, getTimestamp } from "../utils.ts";
+import { Message } from "../utils.ts";
 
 const props = defineProps<{
   actionCount: number;
@@ -20,8 +20,10 @@ function toggleFullLog() {
   items?.[items.length - 1].scrollIntoView();
 }
 
-function getResultFromMsg(msg?: string): string | void {
-  return removeTimestamp(msg)?.split(" ")[0].toLowerCase();
+function getResultFromMsg(json?: string): string | void {
+  if (json == null) return;
+  let msg = Message.parse(json, "message");
+  return msg?.split(" ")[0].toLowerCase();
 }
 </script>
 
@@ -30,7 +32,7 @@ function getResultFromMsg(msg?: string): string | void {
     <!-- Show most recent action at bottom of viewport -->
     <div class="collapsed" @pointerup="toggleFullLog()">
       <img src="../assets/history-line.png" alt="history" style="height: 2em" />
-      <p>{{ removeTimestamp(actions?.[0]) }}</p>
+      <p>{{ Message.parse(actions?.[0], "message") }}</p>
       <img
         id="arrow"
         class="rot-180"
@@ -44,10 +46,10 @@ function getResultFromMsg(msg?: string): string | void {
     <ul class="expanded" hidden>
       <template v-for="i in actionCount">
         <li
-          :data-time="getTimestamp(sortedActions()[i - 1])"
+          :data-time="Message.parse(sortedActions()[i - 1], 'timestamp')"
           :class="getResultFromMsg(sortedActions()[i - 1])"
         >
-          {{ removeTimestamp(sortedActions()[i - 1]) }}
+          {{ Message.parse(sortedActions()[i - 1], "message") }}
         </li>
       </template>
     </ul>

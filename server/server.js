@@ -1,4 +1,4 @@
-const { Timestamp } = require("../server/cjs-utils.js");
+const { Message } = require("../server/cjs-utils.js");
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -15,14 +15,13 @@ const io = new Server(server, {
 io.on("connection", async (socket) => {
     let sockets = await io.allSockets();
     io.emit(
-        "message-received", 
-        Timestamp.add(
-            `User ${socket.id} has connected. ${[...sockets].length} players connected.`
+        "server-info", 
+        Message.format(
+            `User ${socket.id} has connected. ${[...sockets].length} players connected.`,
+            "server"
         )
     );
     
-    //TODO: Distinguish between server messages and chat messages.
-
     socket.on("message", (data) => {
         // console.log(data);
         socket.broadcast.emit("message-received", data);
@@ -40,8 +39,8 @@ io.on("connection", async (socket) => {
 
     socket.on("disconnect", () => {
         io.emit(
-            "message-received", 
-            Timestamp.add(`User ${socket.id} has left.`));
+            "server-info", 
+            Message.format(`User ${socket.id} has left.`, "server"));
     });
 });
 
