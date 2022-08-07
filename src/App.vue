@@ -4,7 +4,7 @@ import Board from "./components/Board.vue";
 import NavBar from "./components/NavBar.vue";
 import ChatBox from "./components/ChatBox.vue";
 import { Socket, io } from "socket.io-client";
-import { ref, Ref } from "vue";
+import { ref } from "vue";
 import { Player } from "./game";
 
 let playerName = ref("");
@@ -49,7 +49,7 @@ function startGame(player: Player) {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 3vh;
+  margin-top: 2vh;
 }
 
 body {

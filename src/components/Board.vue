@@ -2,7 +2,8 @@
 <script setup lang="ts">
 import TargetSpace from "./TargetSpace.vue";
 import ActionLog from "./ActionLog.vue";
-import { ref } from "vue";
+import StatusBar from "./StatusBar.vue";
+import { ref, onMounted } from "vue";
 import { Socket } from "socket.io-client";
 import { Message } from "../utils";
 import { Fleet } from "../ship";
@@ -19,7 +20,10 @@ let opponent: string;
 let myTurn = ref(false);
 console.log(fleet);
 
-//TODO: Track player turn.
+onMounted(() => {
+  props.socket.emit("ready", props.socket.id);
+});
+
 function registerOpponent(id: string) {
   opponent = id;
 }
@@ -30,6 +34,7 @@ function isValidResult(result: any): boolean {
 
 function sendTargetId(targetId: string | null): void {
   if (targetId == null) return;
+  if (myTurn.value === false) return;
   props.socket.emit("attack", Message.format(targetId, props.socket.id));
 }
 
@@ -71,12 +76,13 @@ function updateBoard(targetId: string, result: string): void {
 }
 
 props.socket.on("player-turn", (id: string) => {
-  myTurn.value = (id !== props.socket.id);
+  myTurn.value = (id === props.socket.id);
   console.log(props.socket.id, "turn=" + myTurn.value);
 })
 </script>
 
 <template>
+  <StatusBar :playerName="player" :playerId="socket.id" :playerTurn="myTurn" />
   <section :id="player">
     <ul class="header">
       <template v-for="x in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']">
@@ -111,6 +117,7 @@ ul.header {
   font-size: medium;
   font-weight: bold;
   color: hsl(0, 0%, 20%);
+  padding-top: 1rem;
   padding-bottom: 0.5em;
   display: grid;
   grid-template-columns: repeat(10, 1fr);

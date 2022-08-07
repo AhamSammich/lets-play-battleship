@@ -27,7 +27,6 @@ function sendMessage() {
   //Type 'null' is not assignable to type 'HTMLInputElement'.ts(2322)
   let input: HTMLInputElement = document.getElementById("chat-input");
   if (input == null || input.value == null) return;
-  console.log("props: " + props.name);
   let json: string = Message.format(input.value, props.name);
   props.socket.emit("message", json);
   updateChat(json);
@@ -80,12 +79,12 @@ onUpdated(() => {
 #chat {
   width: 100%;
   position: fixed;
-  bottom: calc(0vh + 3rem);
+  bottom: calc(0vh + 2rem);
 }
 .chat-log {
   font-size: large;
   width: 100%;
-  height: 8em;
+  height: 7.5em;
   color: palegoldenrod;
   background-color: hsla(0, 0%, 20%, 0.7);
   padding: 0.5em 1em;
@@ -173,6 +172,6 @@ input {
   height: 2rem;
   padding: 0.25rem;
   background-color: ghostwhite;
-  border: 3px inset whitesmoke;
+  border: 0.2rem inset whitesmoke;
 }
 </style>

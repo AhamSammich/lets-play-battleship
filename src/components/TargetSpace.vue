@@ -8,12 +8,10 @@ const props = defineProps<{
 defineEmits(["attack"]);
 
 const id: string = `${props.column}-${props.row}`;
-let checked = false;
 
 // Send the selected TargetSpace id over socket
 function emitTargetId(): string | void {
-  if (checked) return;
-  checked = true;
+  if (props.result) return;
   return id;
 }
 </script>

@@ -15,23 +15,38 @@ const io = new Server(server, {
 const ROOMS = {};
 
 io.on("connection", async (socket) => {
-    let key = Object.keys(ROOMS).find(key => ROOMS[key] < 2);
-    let roomId = key ? key : socket.id.slice(0, 5);
-    console.log(roomId);
-    if (socket.id.slice(0,5) === roomId) {
-        ROOMS[roomId] = 1;
+    let key = Object.keys(ROOMS).find(key => ROOMS[key].count < 2);
+    let roomId = key ? key : `Room#${Object.keys(ROOMS).length + 1}`;
+    if (key) {
+        let hostId = ROOMS[roomId].host;
+        let room = ROOMS[roomId];
+        room.count++;
+        io.to(hostId).emit(
+            "server-info", 
+            Message.format(
+                `A new player entered ${roomId}. Players connected: ${room.count}.`,
+                "server"
+            )
+        );
     } else {
-        ROOMS[roomId]++;
-        console.log(ROOMS[roomId]);
+        // Create a new room and allow the host the first turn.
+        ROOMS[roomId] = { host: socket.id, count: 1 };
     }
     socket.join(roomId);
-    io.in(roomId).emit(
-        "server-info", 
-        Message.format(
-            `A new player has connected to Room#${Object.keys(ROOMS).indexOf(roomId) + 1}. Players connected: ${ROOMS[roomId]}.`,
-            "server"
-        )
-    );
+
+    socket.on("ready", (id) => {
+        let room = ROOMS[roomId];
+        console.log(`User ${socket.id} connected to ${roomId}. Hosted by ${room.host}.`);
+        // if (id === room.host) io.emit("player-turn", id);
+        io.in(roomId).emit("player-turn", room.host);
+        io.to(id).emit(
+            "server-info", 
+            Message.format(
+                `You have entered ${roomId}. Players connected: ${room.count}.`,
+                "server"
+            )
+        );
+    });
     
     socket.on("message", (data) => {
         // console.log(data);
@@ -46,12 +61,19 @@ io.on("connection", async (socket) => {
     socket.on("attack-result", (data, toId) => {
         // console.log(data);
         io.to(toId).emit("incoming-result", data);
-        io.in(roomId).emit("player-turn", toId);
+        io.in(roomId).emit("player-turn", socket.id);
     });
 
-    socket.on("disconnecting", () => {
-        ROOMS[roomId]--;
+    socket.on("disconnecting", async () => {
+        let room = ROOMS[roomId];
+        room.count--;
         socket.leave(roomId);
+        if (socket.id === room.host) {
+            let sockets = await io.in(roomId).fetchSockets();
+            room.host = sockets[0].id;
+            // io.to(room.host).emit("player-turn", room.host);
+            console.log("\nNew host: " + room.host);
+        }
     })
 
     socket.on("disconnect", () => {

@@ -20,7 +20,7 @@ nav {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  height: 3rem;
+  height: 2rem;
   width: 100%;
   background-color: rgba(51, 51, 51, 0.5);
   color: ghostwhite;
