@@ -2,6 +2,7 @@ const { Message } = require("../server/cjs-utils.js");
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
+const { instrument } = require("@socket.io/admin-ui");
 
 const app = express();
 const server = http.createServer(app);
@@ -10,6 +11,10 @@ const io = new Server(server, {
         origin: "*",
         methods: ["GET", "POST"]
     }
+});
+
+instrument(io, {
+    auth: false
 });
 
 const ROOMS = {};
@@ -67,11 +72,14 @@ io.on("connection", async (socket) => {
     socket.on("disconnecting", async () => {
         let room = ROOMS[roomId];
         room.count--;
+        io.to(socket.id).emit(
+            "server-info",
+            "You have been disconnected."
+            );
         socket.leave(roomId);
         if (socket.id === room.host) {
             let sockets = await io.in(roomId).fetchSockets();
-            room.host = sockets[0].id;
-            // io.to(room.host).emit("player-turn", room.host);
+            room.host = sockets[0]?.id;
             console.log("\nNew host: " + room.host);
         }
     })

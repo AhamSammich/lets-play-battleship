@@ -3,7 +3,8 @@
 import TargetSpace from "./TargetSpace.vue";
 import ActionLog from "./ActionLog.vue";
 import StatusBar from "./StatusBar.vue";
-import { ref, onMounted } from "vue";
+import ShipStatus from "./ShipStatus.vue";
+import { reactive, ref, onMounted } from "vue";
 import { Socket } from "socket.io-client";
 import { Message } from "../utils";
 import { Fleet } from "../ship";
@@ -15,9 +16,14 @@ const props = defineProps<{
 }>();
 
 let actionCount = ref(0);
-let fleet = new Fleet(props.player, ["Carrier", "Cruiser", "Destroyer", "Submarine", "Frigate"]);
+let fleet = reactive(
+  new Fleet(
+    props.player, 
+    ["Carrier", "Cruiser", "Destroyer", "Submarine", "Frigate"]
+    ));
 let opponent: string;
 let myTurn = ref(false);
+let hideStatus = ref(false);
 console.log(fleet);
 
 onMounted(() => {
@@ -47,7 +53,7 @@ props.socket.on("incoming-attack", (json) => {
 });
 
 function checkForHit(targetId: string): void {
-  const result = fleet.inLocations(targetId) ? "hit" : "miss";
+  const result = fleet.handleAttack(targetId) ? "hit" : "miss";
   let resultMsg = `${result.toUpperCase()} at ${targetId}`;
   sendHitOrMiss(resultMsg);
 }
@@ -82,7 +88,12 @@ props.socket.on("player-turn", (id: string) => {
 </script>
 
 <template>
-  <StatusBar :playerName="player" :playerId="socket.id" :playerTurn="myTurn" />
+  <StatusBar 
+    :playerName="player" 
+    :playerId="socket.id" 
+    :playerTurn="myTurn" 
+    @toggle-status="() => hideStatus = !hideStatus" />
+  <ShipStatus :fleet="fleet" :hidden="hideStatus" />
   <section :id="player">
     <ul class="header">
       <template v-for="x in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']">
@@ -128,7 +139,6 @@ ul.header {
   display: flex;
   flex-direction: row;
   gap: 0;
-  /* box-shadow: 0.1em -0.1em 0.3em 0.1em hsla(0, 0%, 20%, 0.9); */
 }
 
 .row::after {

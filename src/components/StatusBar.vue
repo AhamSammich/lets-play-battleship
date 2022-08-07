@@ -5,6 +5,10 @@ const props = defineProps<{
     playerTurn: boolean;
 }>();
 
+const emits = defineEmits([
+    "toggle-status"
+])
+
 function checkTurn() {
     return props.playerTurn;
 }
@@ -12,7 +16,10 @@ function checkTurn() {
 </script>
 
 <template>
-    <section :class="playerTurn ? 'active' : ''">
+    <section 
+        :class="playerTurn ? 'active' : ''" 
+        @pointerup="$emit('toggle-status')"
+        >
         <p>{{ playerName }} ({{ playerId }})</p>
         <template v-if="checkTurn()"><p>Your Turn</p></template>
         <template v-if="!checkTurn()"><p>Opponent Turn</p></template>
@@ -23,6 +30,7 @@ function checkTurn() {
 section {
     --color1: hsl(207 44% 49% / 0.8);
     --color2: hsl(0 0% 20% / 0.8);
+    letter-spacing: 0.05em;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -35,6 +43,7 @@ section {
     height: 1.5rem;
     background-color: var(--color2);
     color: white;
+    cursor: pointer;
 }
 
 section.active {

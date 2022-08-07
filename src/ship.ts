@@ -19,7 +19,7 @@ class Ship {
 
   constructor(type: ShipType, userId: string, name?: string) {
     this.type = type;
-    this.id = `${type}(${userId})`;
+    this.id = `${type}`;
     this.givenName = name;
     this.hitPoints = ShipSize[type];
   }
@@ -32,9 +32,10 @@ class Ship {
     return this.givenName || this.id;
   }
 
-  addHit(numOfHits: number) {
+  addHit(numOfHits=1) {
     let remainingPoints: number = (this.hitPoints -= numOfHits || 1);
     this.hitPoints = remainingPoints > 0 ? remainingPoints : 0;
+    if (this.hitPoints === 0) console.log(`${this.name} is sunk.`)
   }
 
   get isSunk(): boolean {
@@ -114,8 +115,19 @@ class Fleet {
     }
   }
 
-  inLocations(point: string) {
+  inLocations(point: string): boolean {
     return this.locations.includes(point);
+  }
+
+  handleAttack(point: string): boolean {
+    if (!this.inLocations(point)) return false;
+
+    let ship = this.ships.find(ship => ship.location.includes(point));
+    if (ship == null) return false;
+    
+    console.log(`${ship.name} was hit.`)
+    ship.addHit();
+    return true;
   }
 }
 

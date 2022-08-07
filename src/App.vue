@@ -17,6 +17,8 @@ function startGame(player: Player) {
   document.getElementById("splash")?.classList.add("hidden");
   ready.value = true;
 }
+
+function toggleChatSize() {fullChat.value = !fullChat.value}
 </script>
 
 <template>
@@ -28,7 +30,7 @@ function startGame(player: Player) {
       <Board :player="playerName" :socket="socket" :actions="[]" />
     </section>
     <ChatBox :name="playerName" :socket="socket" :expanded="fullChat" />
-    <NavBar position="bottom" @toggle-chat="() => (fullChat = !fullChat)" />
+    <NavBar position="bottom" @toggle-chat="toggleChatSize" />
   </template>
 </template>
 
