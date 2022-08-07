@@ -1,3 +1,5 @@
+import { checkSuccess } from "./utils";
+
 const ShipSize = {
     Frigate: 2,
     Submarine: 3,
@@ -9,7 +11,7 @@ const ShipSize = {
 type ShipType = keyof typeof ShipSize;
 
 class Ship {
-    type: ShipType;
+  type: ShipType;
   id: string;
   givenName?: string;
   hitPoints: number;
@@ -50,26 +52,71 @@ class Ship {
 }
 
 class Fleet {
-    id: string;
-    ships: Ship[] = [];
+  id: string;
+  ships: Ship[] = [];
+  // locations: string[] = [];
 
-    constructor(userId: string, ships?: ShipType[]) {
-        this.id = userId;
-        if (ships) this.ships = this.buildShips(ships);
+  constructor(userId: string, ships?: ShipType[]) {
+      this.id = userId;
+      if (ships) this.ships = this.buildShips(ships);
+      for (let ship of this.ships) this.placeShip(ship);
+  }
+
+  get locations(): string[] {
+    let locs: string[] = [];
+    this.ships.forEach(ship => locs.push(...ship.location));
+    return locs
+  }
+
+  buildShips(shipTypes: ShipType[]): Ship[] {
+      let newShips = [];
+      for (let type of shipTypes) {
+          newShips.push(new Ship(type, this.id))
+      }
+      return newShips;
+  }
+
+  addShips(ships: Ship[]) {
+      this.ships.push(...ships);
+  }
+
+  placeShip(ship: Ship) {
+    // Get random start point
+    const columns = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+    const getRandomNum = () => Math.floor(Math.random() * 10);
+    let [x, y] = [getRandomNum(), getRandomNum() + 1];
+    let origin = `${columns[x]}-${y}`;
+    let locationUnvailable = this.inLocations(origin)
+    while (locationUnvailable) {
+      [x, y] = [getRandomNum(), getRandomNum() + 1];
+      origin = `${columns[x]}-${y}`;
+      locationUnvailable = this.inLocations(origin);
     }
 
-    buildShips(shipTypes: ShipType[]): Ship[] {
-        let newShips = [];
-        for (let type of shipTypes) {
-            newShips.push(new Ship(type, this.id))
+    const shipSize = ship.hitPoints;
+    while (ship.location.length < shipSize) {
+      let axis = checkSuccess(50) ? "vertical" : "horizontal";
+      let coord = axis === "horizontal" ? x : y;
+      let locs = [];
+      while (locs.length < shipSize - 1) {
+        coord++;
+        if (axis === "horizontal") {
+          coord = coord < 10 ? coord : (coord - shipSize);
+        } else {
+          coord = coord <= 10 ? coord : (coord - shipSize);
         }
-        console.log(`SHIPS BUILT:\n${newShips}`);
-        return newShips;
+        let newLoc = axis === "horizontal" ? `${columns[coord]}-${y}` : `${columns[x]}-${coord}`;
+        locs.push(newLoc);
+      }
+      if (locs.some(loc => this.inLocations(loc))) continue;
+      ship.setLocation([origin, ...locs]);
+      console.log(ship.name, ship.location);
     }
+  }
 
-    addShips(ships: Ship[]) {
-        this.ships.push(...ships);
-    }
+  inLocations(point: string) {
+    return this.locations.includes(point);
+  }
 }
 
 export { Ship, Fleet };

@@ -4,20 +4,22 @@ import TargetSpace from "./TargetSpace.vue";
 import ActionLog from "./ActionLog.vue";
 import { ref } from "vue";
 import { Socket } from "socket.io-client";
-// @ts-ignore
-import { checkSuccess, Message } from "../utils.ts";
+import { Message } from "../utils";
+import { Fleet } from "../ship";
 
 const props = defineProps<{
-  owner: string;
+  player: string;
   socket: Socket;
   actions: string[];
 }>();
 
 let actionCount = ref(0);
+let fleet = new Fleet(props.player, ["Carrier", "Cruiser", "Destroyer", "Submarine", "Frigate"]);
 let opponent: string;
+let myTurn = ref(false);
+console.log(fleet);
 
 //TODO: Track player turn.
-//TODO: Display player/opponent id or name.
 function registerOpponent(id: string) {
   opponent = id;
 }
@@ -40,8 +42,7 @@ props.socket.on("incoming-attack", (json) => {
 });
 
 function checkForHit(targetId: string): void {
-  //TODO: Implement actual ship position data.
-  const result = checkSuccess(50) ? "hit" : "miss";
+  const result = fleet.inLocations(targetId) ? "hit" : "miss";
   let resultMsg = `${result.toUpperCase()} at ${targetId}`;
   sendHitOrMiss(resultMsg);
 }
@@ -68,10 +69,15 @@ function updateBoard(targetId: string, result: string): void {
   targetElement.classList.add(result);
   targetElement.setAttribute("checked", "");
 }
+
+props.socket.on("player-turn", (id: string) => {
+  myTurn.value = (id !== props.socket.id);
+  console.log(props.socket.id, "turn=" + myTurn.value);
+})
 </script>
 
 <template>
-  <section :id="owner">
+  <section :id="player">
     <ul class="header">
       <template v-for="x in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']">
         <li>{{ x }}</li>

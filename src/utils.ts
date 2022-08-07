@@ -10,12 +10,11 @@ class Message {
             "message": msg, 
             "from": senderId || "None"
             });  
-        console.log(json)
         return json; 
     };
 
-    static parse(json: string, key?: string): string | void {
-        if (json == null) return;
+    static parse(json: string, key?: string): string {
+        if (json == null) return "";
         let data = JSON.parse(json);
         if (key === "timestamp") return new Date(parseInt(data.timestamp)).toLocaleTimeString();
         if (key) return data?.[key];

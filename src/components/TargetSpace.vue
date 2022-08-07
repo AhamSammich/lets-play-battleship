@@ -24,7 +24,8 @@ function emitTargetId(): string | void {
 
 <style scoped>
 div {
-  width: clamp(30px, calc(100vw / 15), 40px);
+  /* width: clamp(30px, calc(100vw / 15), 40px); */
+  width: 40px;
   aspect-ratio: 1/1;
   background-color: steelblue;
   border: 0.05em solid white;

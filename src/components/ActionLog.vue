@@ -14,8 +14,10 @@ function sortedActions() {
 //TODO: Split log into Player/Opponent columns.
 function toggleFullLog() {
   let log = document.querySelector(".expanded");
+  let bar = document.querySelector(".log");
   let items = log ? Array.from(log.children) : null;
   log?.toggleAttribute("hidden");
+  bar?.toggleAttribute("shifted");
   document.querySelector("#arrow")?.classList.toggle("rot-180");
   items?.[items.length - 1].scrollIntoView();
 }
@@ -36,7 +38,7 @@ function getResultFromMsg(json?: string): string | void {
       <img
         id="arrow"
         class="rot-180"
-        src="../assets/chevron-top.png"
+        src="../assets/chevron-down.png"
         alt="expand"
         style="height: 1em"
       />
@@ -66,6 +68,7 @@ function getResultFromMsg(json?: string): string | void {
   border-radius: 3px;
   box-shadow: 0.1em -0.1em 0.3em 0.1em hsla(0, 0%, 20%, 0.9);
   cursor: pointer;
+  transition: transform 300ms linear;
 }
 
 .collapsed {
@@ -75,6 +78,8 @@ function getResultFromMsg(json?: string): string | void {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  transition: height 300ms linear,
+    transform 300ms linear;
 }
 
 .expanded {
@@ -88,12 +93,14 @@ function getResultFromMsg(json?: string): string | void {
   background-color: hsla(0, 0%, 20%, 0.95);
   box-shadow: 0.1em -0.1em 0.3em 0.1em hsla(0, 0%, 20%, 0.9);
   border-radius: 3px;
-  height: calc(100vh / 2);
+  height: 25em;
   width: 100%;
   padding: 1em 2em;
-  top: calc(-100vh / 2);
+  top: calc(-100vh / 2 - 2rem);
   overflow-y: scroll;
   list-style: none;
+  transform-origin: bottom;
+  transition: transform 200ms linear;
 }
 
 li {
@@ -122,6 +129,7 @@ li::after {
 img {
   max-height: inherit;
   margin: 0.5em;
+  transition: transform 200ms linear;
 }
 
 .hit {
@@ -137,16 +145,7 @@ img {
 }
 
 [hidden] {
-  transition: transform 3s linear;
-  transform: scaleY(0) translateY(100vh);
-  opacity: 0;
-  height: 0;
-}
-
-@keyframes collapse {
-  to {
-    transform: scaleY(0);
-    opacity: 0;
-  }
+  transition: transform 200ms linear;
+  transform: scaleY(0);
 }
 </style>

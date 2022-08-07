@@ -5,6 +5,7 @@ import { ref, Ref, onUpdated } from "vue";
 import { Message } from "../utils.ts";
 
 const props = defineProps<{
+  name?: string;
   socket: Socket;
   expanded: boolean;
 }>();
@@ -16,7 +17,8 @@ const players: Record<string, string> = { server: "server" };
 function registerPlayer(id: string) {
   if (Object.keys(players).includes(id)) return;
   let playerNumber = Object.keys(players).length + 1;
-  players[id] = `Player-${playerNumber}`;
+  // players[id] = `Player-${playerNumber} `;
+  players[id] = id;
   console.log(players);
 }
 
@@ -25,7 +27,8 @@ function sendMessage() {
   //Type 'null' is not assignable to type 'HTMLInputElement'.ts(2322)
   let input: HTMLInputElement = document.getElementById("chat-input");
   if (input == null || input.value == null) return;
-  let json: string = Message.format(input.value, props.socket.id);
+  console.log("props: " + props.name);
+  let json: string = Message.format(input.value, props.name);
   props.socket.emit("message", json);
   updateChat(json);
   input.value = "";
@@ -104,12 +107,14 @@ onUpdated(() => {
 ::after,
 ::before {
   display: block;
+  width: -moz-fit-content;
   width: fit-content;
   padding: 0.2em 0.5em;
   border-radius: 0.5em;
 }
 
 li {
+  width: -moz-fit-content;
   width: fit-content;
   padding: 0.5em 0.75em;
   color: white;
