@@ -30,6 +30,11 @@ onMounted(() => {
   setTimeout(() => hideStatus.value = true, 3000);
 });
 
+async function flashStatus() {
+  hideStatus.value = false;
+  setTimeout(() => hideStatus.value = true, 2000);
+}
+
 function registerOpponent(id: string) {
   opponent = id;
 }
@@ -54,6 +59,7 @@ props.socket.on("incoming-attack", (json) => {
 
 function checkForHit(targetId: string): void {
   let ship = fleet.handleAttack(targetId);
+  if (ship) flashStatus();
   let result = ship ? "hit" : "miss";
   let resultMsg = `${result.toUpperCase()} at ${targetId}`;
   sendHitOrMiss(resultMsg);

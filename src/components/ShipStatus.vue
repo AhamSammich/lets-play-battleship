@@ -5,14 +5,14 @@ const props = defineProps<{
   collapse: boolean;
 }>();
 
-const reportedSunk: Ship[] = [];
+const reportedSunk: string[] = [];
 
 const emits = defineEmits(["ship-sunk"]);
 
 function checkSunk(ship: Ship): boolean {
   if (!ship.isSunk) return false;
-  if (reportedSunk.includes(ship)) return true;
-  reportedSunk.push(ship);
+  if (reportedSunk.includes(ship.name)) return true;
+  reportedSunk.push(ship.name);
   emits("ship-sunk", ship.name);
   return true;
 }
