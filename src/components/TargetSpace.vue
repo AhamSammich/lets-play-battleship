@@ -10,9 +10,11 @@ const emits = defineEmits(["attack"]);
 
 const id: string = `${props.column}-${props.row}`;
 
-// Send the selected TargetSpace id over socket
 function emitTargetId(): string | void {
-  if (checked) return;
+  if (checked) {
+    console.log(`${id} already checked.`);
+    return;
+  }
   checked = true;
   return id;
 }

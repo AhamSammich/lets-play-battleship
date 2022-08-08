@@ -7,13 +7,14 @@ const props = defineProps<{
 
 const reportedSunk: string[] = [];
 
-const emits = defineEmits(["ship-sunk"]);
+const emits = defineEmits(["ship-sunk", "all-sunk"]);
 
 function checkSunk(ship: Ship): boolean {
   if (!ship.isSunk) return false;
   if (reportedSunk.includes(ship.name)) return true;
   reportedSunk.push(ship.name);
   emits("ship-sunk", ship.name);
+  if (reportedSunk.length === 5) emits("all-sunk");
   return true;
 }
 </script>
@@ -66,7 +67,6 @@ function checkSunk(ship: Ship): boolean {
   transform-origin: left;
   transform: scale(0.75);
   color: hsl(0, 0%, 60%);
-  /* text-shadow: 0.1em -0.05em 0.1em palevioletred; */
 }
 
 .hp {
@@ -85,10 +85,7 @@ function checkSunk(ship: Ship): boolean {
   border-radius: 0.1em;
 }
 
-
-
 [collapse="true"] {
   transform: scaleY(0);
 }
-
 </style>

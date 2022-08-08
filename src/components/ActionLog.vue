@@ -78,8 +78,7 @@ function getResultFromMsg(json?: string): string | void {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  transition: height 300ms linear,
-    transform 300ms linear;
+  transition: height 300ms linear, transform 300ms linear;
 }
 
 .expanded {

@@ -16,10 +16,7 @@ const players: Record<string, string> = { server: "server" };
 
 function registerPlayer(id: string) {
   if (Object.keys(players).includes(id)) return;
-  let playerNumber = Object.keys(players).length + 1;
-  // players[id] = `Player-${playerNumber} `;
   players[id] = id;
-  console.log(players);
 }
 
 function sendMessage() {
@@ -28,7 +25,7 @@ function sendMessage() {
   let input: HTMLInputElement = document.getElementById("chat-input");
   if (input == null || input.value == null) return;
   let json: string = Message.format(input.value, props.name);
-  props.socket.emit("message", json);
+  props.socket.send(json);
   updateChat(json);
   input.value = "";
 }
@@ -94,8 +91,7 @@ onUpdated(() => {
   overflow-y: scroll;
   text-align: left;
   list-style: none;
-  transition: height 100ms linear,
-    background-color 300ms linear;
+  transition: height 100ms linear, background-color 300ms linear;
 }
 
 .chat-log[expanded="true"] {

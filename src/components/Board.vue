@@ -1,13 +1,12 @@
-// 10x10 grid composed of Spaces // Change color of space based on click result.
 <script setup lang="ts">
 import TargetSpace from "./TargetSpace.vue";
 import ActionLog from "./ActionLog.vue";
 import StatusBar from "./StatusBar.vue";
 import ShipStatus from "./ShipStatus.vue";
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref, Ref, onMounted } from "vue";
 import { Socket } from "socket.io-client";
 import { Message } from "../utils";
-import { Fleet, Ship } from "../ship";
+import { Fleet } from "../ship";
 
 const props = defineProps<{
   player: string;
@@ -17,26 +16,20 @@ const props = defineProps<{
 
 let actionCount = ref(0);
 let fleet = reactive(
-  new Fleet(
-    props.player, 
-    ["Carrier", "Cruiser", "Destroyer", "Submarine", "Frigate"]
-    ));
-let opponent: string;
+  new Fleet(props.player, ["Carrier", "Cruiser", "Destroyer", "Submarine", "Frigate"])
+);
 let myTurn = ref(false);
 let hideStatus = ref(false);
+let gameResult: Ref<"win" | "lose" | null> = ref(null);
 
 onMounted(() => {
   props.socket.emit("ready", props.socket.id);
-  setTimeout(() => hideStatus.value = true, 3000);
+  setTimeout(() => (hideStatus.value = true), 3000);
 });
 
 async function flashStatus() {
   hideStatus.value = false;
-  setTimeout(() => hideStatus.value = true, 2000);
-}
-
-function registerOpponent(id: string) {
-  opponent = id;
+  setTimeout(() => (hideStatus.value = true), 1000);
 }
 
 function isValidResult(result: any): boolean {
@@ -48,14 +41,6 @@ function sendTargetId(targetId: string | null): void {
   if (myTurn.value === false) return;
   props.socket.emit("attack", Message.format(targetId, props.socket.id));
 }
-
-props.socket.on("incoming-attack", (json) => {
-  let opponentId: string = Message.parse(json, "from");
-  if (opponentId === props.socket.id) return;
-  if (opponent == undefined) registerOpponent(opponentId);
-  let targetId: string = Message.parse(json, "message");
-  checkForHit(targetId);
-});
 
 function checkForHit(targetId: string): void {
   let ship = fleet.handleAttack(targetId);
@@ -69,8 +54,51 @@ function sendHitOrMiss(resultMsg: string): void {
   let resultData = Message.format(resultMsg, props.socket.id);
   props.actions.unshift(Message.format(`Opponent ${resultMsg}`));
   actionCount.value++;
-  props.socket.emit("attack-result", resultData, opponent);
+  props.socket.emit("attack-result", resultData);
 }
+
+function updateBoard(targetId: string, result: string): void {
+  if (!isValidResult(result)) return;
+  const targetElement: any = document.getElementById(targetId);
+  targetElement.classList.add(result);
+  targetElement.setAttribute("checked", "");
+}
+
+function disableBoard() {
+  const board: HTMLElement | null = document.querySelector(".board");
+  board?.style.setProperty("pointer-events", "none");
+}
+
+function enableBoard() {
+  const board: HTMLElement | null = document.querySelector(".board");
+  board?.style.removeProperty("pointer-events");
+}
+
+function sendStatus(shipName: string) {
+  props.socket.send(
+    Message.format(`You sank ${props.player}'s ${shipName}!`, "Status Report")
+  );
+}
+
+function endGame() {
+  props.socket.emit("game-over");
+  gameResult.value = "lose";
+  setTimeout(() => (hideStatus.value = false), 1000);
+  disableBoard();
+  props.socket.send(
+    Message.format(`Congratulations! You've won!`, "Status Report")
+  );
+}
+
+// =========================
+// LISTENERS
+// =========================
+
+props.socket.on("player-turn", (id: string) => {
+  if (gameResult.value !== null) return;
+  myTurn.value = (id === props.socket.id);
+  myTurn.value ? enableBoard() : disableBoard();
+});
 
 props.socket.on("incoming-result", (json: string) => {
   let resultData = Message.parse(json, "message").split(" at ");
@@ -81,36 +109,39 @@ props.socket.on("incoming-result", (json: string) => {
   updateBoard(targetId, result.toLowerCase());
 });
 
-function updateBoard(targetId: string, result: string): void {
-  if (!isValidResult(result)) return;
-  const targetElement: any = document.getElementById(targetId);
-  targetElement.classList.add(result);
-  targetElement.setAttribute("checked", "");
-}
+props.socket.on("incoming-attack", (json) => {
+  let targetId: string = Message.parse(json, "message");
+  checkForHit(targetId);
+});
 
-props.socket.on("player-turn", (id: string) => {
-  myTurn.value = (id === props.socket.id);
-})
-
-function sendStatus(shipName: string) {
+props.socket.on("victory", () => {
+  gameResult.value = "win";
+  setTimeout(() => (hideStatus.value = false), 1000);
+  disableBoard();
   props.socket.emit(
     "message",
-    Message.format(`You sank ${props.player}'s ${shipName}!`, "Status Report")
-    );
-}
-
-//TODO: Check for victory/defeat.
-
+    Message.format(`You've lost... Better luck next time!`, "Status Report")
+  );
+});
 </script>
 
+// ================================= // TEMPLATE // =================================
+
 <template>
-  <StatusBar 
-    :playerName="player" 
-    :playerId="socket.id" 
-    :playerTurn="myTurn" 
-    @toggle-status="() => hideStatus = !hideStatus" />
-  <ShipStatus :fleet="fleet" :collapse="hideStatus" @ship-sunk="(shipName) => sendStatus(shipName)"/>
-  <section :id="player">
+  <StatusBar
+    :playerName="player"
+    :playerId="socket.id"
+    :playerTurn="myTurn"
+    :game-result="gameResult"
+    @toggle-status="() => (hideStatus = !hideStatus)"
+  />
+  <ShipStatus
+    :fleet="fleet"
+    :collapse="hideStatus"
+    @ship-sunk="(shipName) => sendStatus(shipName)"
+    @all-sunk="endGame()"
+  />
+  <section :id="player" class="board">
     <ul class="header">
       <template v-for="x in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']">
         <li>{{ x }}</li>
@@ -130,6 +161,8 @@ function sendStatus(shipName: string) {
     <ActionLog :actionCount="actionCount" :actions="actions" />
   </section>
 </template>
+
+// ================================== // STYLE // ==================================
 
 <style>
 section {
@@ -168,5 +201,4 @@ ul.header {
   margin-right: -2.5em;
   vertical-align: middle;
 }
-
 </style>
