@@ -23,7 +23,9 @@ let hideStatus = ref(false);
 let gameResult: Ref<"win" | "lose" | null> = ref(null);
 
 onMounted(() => {
-  props.socket.emit("ready", props.socket.id);
+  props.socket.once("connect", () => {
+    props.socket.emit("ready", props.socket.id);
+  });
   setTimeout(() => (hideStatus.value = true), 3000);
 });
 

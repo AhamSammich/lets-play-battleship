@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// const props = defineProps<{
+//   hidden: boolean
+// }>();
 
 const emits = defineEmits(["new-player"]);
 

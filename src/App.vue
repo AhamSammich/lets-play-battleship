@@ -4,18 +4,31 @@ import Board from "./components/Board.vue";
 import NavBar from "./components/NavBar.vue";
 import ChatBox from "./components/ChatBox.vue";
 import { Socket, io } from "socket.io-client";
-import { ref } from "vue";
+import { Ref, ref } from "vue";
+import { sleep } from "./utils";
 import { Player } from "./game";
 
 let playerName = ref("");
-let socket: Socket = io("http://localhost:5500");
+let socket: Ref<Socket | null> = ref(null);
 const fullChat = ref(false);
 const ready = ref(false);
 
-function startGame(player: Player) {
+async function startGame(player: Player) {
   playerName.value = player.name;
+  if (socket.value === null) socket.value = io("http://localhost:5500");
+  if (socket.value?.disconnected) socket.value.connect();
+  while (socket.value.disconnected) {
+    console.log("Connecting...");
+    await sleep();
+  }
   document.getElementById("splash")?.classList.add("hidden");
   ready.value = true;
+}
+
+function leaveGame() {
+  ready.value = false;
+  socket.value?.disconnect();
+  document.getElementById("splash")?.classList.remove("hidden");
 }
 
 function toggleChatSize() {fullChat.value = !fullChat.value}
@@ -23,14 +36,16 @@ function toggleChatSize() {fullChat.value = !fullChat.value}
 
 <template>
   <section id="splash" class="splash">
-    <StartSplash @new-player="(player: Player) => startGame(player)"/>
+    <StartSplash 
+      @new-player="(player: Player) => startGame(player)"
+      />
   </section>
   <template v-if="ready">
     <section class="play-area">
-      <Board :player="playerName" :socket="socket" :actions="[]" />
+      <Board :player="playerName" :socket="socket!" :actions="[]" />
     </section>
-    <ChatBox :name="playerName" :socket="socket" :expanded="fullChat" />
-    <NavBar position="bottom" @toggle-chat="toggleChatSize" />
+    <ChatBox :name="playerName" :socket="socket!" :expanded="fullChat" />
+    <NavBar position="bottom" @toggle-chat="toggleChatSize" @logout="leaveGame"/>
   </template>
 </template>
 

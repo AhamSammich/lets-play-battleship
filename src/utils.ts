@@ -2,6 +2,10 @@ function checkSuccess(successRate: number): boolean {
     return Math.floor(100 * Math.random()) < successRate
 }
 
+function sleep(ms=1000) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 class Message {
 
     static format(msg: string, senderId?: string): string {
@@ -37,5 +41,6 @@ class Message {
 
 export {
     checkSuccess, 
+    sleep,
     Message
 }
