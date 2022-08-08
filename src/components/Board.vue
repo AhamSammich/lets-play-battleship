@@ -24,10 +24,10 @@ let fleet = reactive(
 let opponent: string;
 let myTurn = ref(false);
 let hideStatus = ref(false);
-console.log(fleet);
 
 onMounted(() => {
   props.socket.emit("ready", props.socket.id);
+  setTimeout(() => hideStatus.value = true, 3000);
 });
 
 function registerOpponent(id: string) {
@@ -93,6 +93,8 @@ function sendStatus(shipName: string) {
     );
 }
 
+//TODO: Check for victory/defeat.
+
 </script>
 
 <template>
@@ -101,7 +103,7 @@ function sendStatus(shipName: string) {
     :playerId="socket.id" 
     :playerTurn="myTurn" 
     @toggle-status="() => hideStatus = !hideStatus" />
-  <ShipStatus :fleet="fleet" :hidden="hideStatus" @ship-sunk="(shipName) => sendStatus(shipName)"/>
+  <ShipStatus :fleet="fleet" :collapse="hideStatus" @ship-sunk="(shipName) => sendStatus(shipName)"/>
   <section :id="player">
     <ul class="header">
       <template v-for="x in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']">
@@ -160,4 +162,5 @@ ul.header {
   margin-right: -2.5em;
   vertical-align: middle;
 }
+
 </style>
