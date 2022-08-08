@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { Socket } from "socket.io-client";
 import { ref, Ref, onUpdated } from "vue";
-//@ts-ignore An import path cannot end with a '.ts' extension. Consider importing '../utils.js' instead.ts(2691)
-import { Message } from "../utils.ts";
+import { Message } from "../utils";
 
 const props = defineProps<{
   name?: string;
@@ -12,7 +11,7 @@ const props = defineProps<{
 
 const msgCount = ref(0);
 const messages: Ref<string[]> = ref([]);
-const players: Record<string, string> = { server: "server" };
+const players: Record<string, string> = { Server: "Server" };
 
 function registerPlayer(id: string) {
   if (Object.keys(players).includes(id)) return;
@@ -37,6 +36,28 @@ props.socket.on("message-received", (json: string) => {
 
 props.socket.on("server-info", (json: string) => {
   updateChat(json);
+});
+
+props.socket.on("disconnect", (reason) => {
+  updateChat(Message.format(
+    `Disconnected from server. ( Reason: ${reason} )`,
+    "Server"
+  ));
+  if (reason !== "io client disconnect") props.socket.connect();
+});
+
+props.socket.on("reconnect_attempt", () => {
+  updateChat(Message.format(
+    "Reconnecting to server...",
+    "Server"
+  ));
+});
+
+props.socket.on("connect", () => {
+  updateChat(Message.format(
+    `You are connected. ( ID: ${props.socket.id} )`,
+    "Server"
+  ));
 });
 
 async function updateChat(json: string) {
@@ -134,13 +155,13 @@ li::before {
   margin-bottom: 0.5em;
 }
 
-li[from="server"],
-li[from="server"]::after {
+li[from="Server"],
+li[from="Server"]::after {
   color: lightgray;
   background-color: transparent;
 }
 
-li[from="server"]::before {
+li[from="Server"]::before {
   color: #333;
   background-color: white;
 }

@@ -21,7 +21,7 @@ const ROOMS = {};
 
 io.on("connection", async (socket) => {
   let key = Object.keys(ROOMS).find((key) => ROOMS[key].count < 2);
-  let roomId = key ? key : `Room#${Object.keys(ROOMS).length + 1}`;
+  let roomId = key ? key : `Room #${Object.keys(ROOMS).length + 1}`;
   if (key) {
     let hostId = ROOMS[roomId].host;
     let room = ROOMS[roomId];
@@ -29,8 +29,10 @@ io.on("connection", async (socket) => {
     io.to(hostId).emit(
       "server-info",
       Message.format(
-        `A new player entered ${roomId}. Players connected: ${room.count}.`,
-        "server"
+        `User ${socket.id} entered the room. ${room.count} user${
+          room.count > 1 ? "s" : ""
+        } connected.`,
+        "Server"
       )
     );
   } else {
@@ -41,14 +43,16 @@ io.on("connection", async (socket) => {
   socket.on("ready", (id) => {
     let room = ROOMS[roomId];
     console.log(
-      `User ${socket.id} connected to ${roomId}. \n\tHosted by ${room.host}.`
+      `User ${socket.id} connected to ${roomId}.\n\tHosted by ${room.host}.`
     );
     io.in(roomId).emit("player-turn", room.host);
     io.to(id).emit(
       "server-info",
       Message.format(
-        `You have entered ${roomId}. Players connected: ${room.count}.`,
-        "server"
+        `You have entered ${roomId}.  ${room.count} user${
+          room.count > 1 ? "s" : ""
+        } connected.`,
+        "Server"
       )
     );
   });
@@ -85,7 +89,7 @@ io.on("connection", async (socket) => {
   socket.on("disconnect", () => {
     io.in(roomId).emit(
       "server-info",
-      Message.format(`User ${socket.id} has left.`, "server")
+      Message.format(`User ${socket.id} has disconnected.`, "Server")
     );
   });
 });

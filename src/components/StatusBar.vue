@@ -57,7 +57,7 @@ p.turn-status {
 
 @keyframes textCrawl {
   50% {
-    transform: translateX(-30%);
+    transform: translateX(-50%);
   }
   100% {
     transform: translateX(0);
