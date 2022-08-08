@@ -1,20 +1,18 @@
 <script setup lang="ts">
 
-defineEmits(["new-player"]);
-// onStartGame
+const emits = defineEmits(["new-player"]);
 
 function createPlayer() {
-  let input = document.getElementById("user");
-  let playerName = input? input.value : "Player";
-  console.log(playerName);
-  return {
-    name: playerName
+  let username = (<HTMLInputElement>document.getElementById("user")).value;
+  let player = {
+    name: username
   }
+  emits("new-player", player);
 }
 </script>
 
 <template>
-  <section class="splash">
+  <form class="splash" @submit.prevent="createPlayer">
   <!-- Quick Play -->
   <!-- emit "start-game" w/ username -->
     <input
@@ -22,9 +20,10 @@ function createPlayer() {
       id="user"
       type="text"
       maxlength="15"
+      pattern="[A-Za-z0-9_-]+"
       placeholder="Enter username"
     />
-    <button @pointerup="$emit('new-player', createPlayer())">Start Game</button>
+    <button type="submit">Join Game</button>
 
   <!-- How To Play -->
   <!-- link to help page -->
@@ -32,7 +31,7 @@ function createPlayer() {
   <!-- Join Game -->
 
   <!-- Login -->
-  </section>
+  </form>
 </template>
 
 <style scoped>
@@ -51,8 +50,25 @@ function createPlayer() {
 input,
 button {
   font-size: 2rem;
-  padding: 0.25rem;
+  font-family: inherit;
+  padding: 0.25rem 0.5rem;
   height: 5rem;
   width: 20rem;
+  background-color: hsl(25 100% 97%);
+  color: hsl(0 0% 20%);
+  border: 0.05rem solid hsl(25, 100%, 97%);
+  border-radius: 0.3rem;
+  box-shadow: 0.05rem -0.05rem 0.5rem 0.1rem hsl(0 0% 20% / 0.5);
+}
+
+button {
+  font-weight: bold;
+  background-color: steelblue;
+  color: lightgoldenrodyellow;
+}
+
+button:hover {
+  background-color: lightgoldenrodyellow;
+  color: steelblue;
 }
 </style>
