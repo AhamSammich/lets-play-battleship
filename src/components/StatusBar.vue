@@ -20,7 +20,7 @@ function checkTurn() {
         :class="playerTurn ? 'active' : ''" 
         @pointerup="$emit('toggle-status')"
         >
-        <p>{{ playerName }} ({{ playerId }})</p>
+        <p>{{ playerName }} ( ID: {{ playerId }} )</p>
         <template v-if="checkTurn()"><p>Your Turn</p></template>
         <template v-if="!checkTurn()"><p>Opponent Turn</p></template>
     </section>
@@ -28,14 +28,14 @@ function checkTurn() {
 
 <style scoped>
 section {
-    --color1: hsl(207 44% 49% / 0.8);
-    --color2: hsl(0 0% 20% / 0.8);
+    --color1: hsl(207 44% 49% / 0.9);
+    --color2: hsl(0 0% 20% / 0.9);
     letter-spacing: 0.05em;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 0.2rem;
+    padding: 0.2rem 0.5rem;
     position: fixed;
     top: 0vh;
     left: 0vw;

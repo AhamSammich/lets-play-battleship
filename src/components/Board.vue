@@ -7,7 +7,7 @@ import ShipStatus from "./ShipStatus.vue";
 import { reactive, ref, onMounted } from "vue";
 import { Socket } from "socket.io-client";
 import { Message } from "../utils";
-import { Fleet } from "../ship";
+import { Fleet, Ship } from "../ship";
 
 const props = defineProps<{
   player: string;
@@ -53,7 +53,8 @@ props.socket.on("incoming-attack", (json) => {
 });
 
 function checkForHit(targetId: string): void {
-  const result = fleet.handleAttack(targetId) ? "hit" : "miss";
+  let ship = fleet.handleAttack(targetId);
+  let result = ship ? "hit" : "miss";
   let resultMsg = `${result.toUpperCase()} at ${targetId}`;
   sendHitOrMiss(resultMsg);
 }
@@ -83,8 +84,15 @@ function updateBoard(targetId: string, result: string): void {
 
 props.socket.on("player-turn", (id: string) => {
   myTurn.value = (id === props.socket.id);
-  console.log(props.socket.id, "turn=" + myTurn.value);
 })
+
+function sendStatus(shipName: string) {
+  props.socket.emit(
+    "message",
+    Message.format(`You sank ${props.player}'s ${shipName}!`, "Status Report")
+    );
+}
+
 </script>
 
 <template>
@@ -93,7 +101,7 @@ props.socket.on("player-turn", (id: string) => {
     :playerId="socket.id" 
     :playerTurn="myTurn" 
     @toggle-status="() => hideStatus = !hideStatus" />
-  <ShipStatus :fleet="fleet" :hidden="hideStatus" />
+  <ShipStatus :fleet="fleet" :hidden="hideStatus" @ship-sunk="(shipName) => sendStatus(shipName)"/>
   <section :id="player">
     <ul class="header">
       <template v-for="x in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']">

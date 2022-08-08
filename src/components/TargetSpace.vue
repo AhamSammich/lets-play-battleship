@@ -2,22 +2,24 @@
 const props = defineProps<{
   row: number;
   column: number | string;
-  result?: string;
 }>();
 
-defineEmits(["attack"]);
+let checked = false;
+
+const emits = defineEmits(["attack"]);
 
 const id: string = `${props.column}-${props.row}`;
 
 // Send the selected TargetSpace id over socket
 function emitTargetId(): string | void {
-  if (props.result) return;
+  if (checked) return;
+  checked = true;
   return id;
 }
 </script>
 
 <template>
-  <div :id="id" :class="result" @pointerup="$emit('attack', emitTargetId())"></div>
+  <div :id="id" @pointerup="$emit('attack', emitTargetId())"></div>
 </template>
 
 <style scoped>

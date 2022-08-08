@@ -5,6 +5,20 @@ const props = defineProps<{
     hidden: boolean;
 }>();
 
+const reportedSunk: Ship[] = [];
+
+const emits = defineEmits([
+    "ship-sunk"
+])
+
+function checkSunk(ship: Ship): boolean {
+    if (!ship.isSunk) return false;
+    if (reportedSunk.includes(ship)) return true;
+    reportedSunk.push(ship);
+    emits("ship-sunk", ship.name);
+    return true;
+} 
+
 </script>
 
 <template>
@@ -12,11 +26,11 @@ const props = defineProps<{
         <template v-for="ship in fleet.ships">
             <li class="ship">
                 <p :class="ship.isSunk? 'sunk': ''">{{ ship.name }}</p>
-                <template v-if="ship.isSunk">
+                <template v-if="checkSunk(ship)">
                     <p class="sunk">SUNK</p>
                 </template>                
                 <ul class="hp">
-                    <template v-for="point in ship.hitPoints">
+                    <template v-for="_ in ship.hitPoints">
                         <li></li>
                     </template>
                 </ul>
@@ -54,7 +68,7 @@ const props = defineProps<{
 .sunk {
     transform-origin: left;
     transform: scale(0.75);
-    color: red;
+    color: hsl(0, 0%, 60%);
     /* text-shadow: 0.1em -0.05em 0.1em palevioletred; */
 }
 

@@ -41,7 +41,7 @@ io.on("connection", async (socket) => {
 
     socket.on("ready", (id) => {
         let room = ROOMS[roomId];
-        console.log(`User ${socket.id} connected to ${roomId}. Hosted by ${room.host}.`);
+        console.log(`User ${socket.id} connected to ${roomId}. \n\tHosted by ${room.host}.`);
         // if (id === room.host) io.emit("player-turn", id);
         io.in(roomId).emit("player-turn", room.host);
         io.to(id).emit(
@@ -60,7 +60,7 @@ io.on("connection", async (socket) => {
 
     socket.on("attack", (data, fromId) => {
         // console.log(data);
-        socket.in(roomId).emit("incoming-attack", data, fromId);
+        socket.broadcast.in(roomId).emit("incoming-attack", data, fromId);
     });
 
     socket.on("attack-result", (data, toId) => {

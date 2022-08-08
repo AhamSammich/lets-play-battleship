@@ -119,7 +119,7 @@ class Fleet {
     return this.locations.includes(point);
   }
 
-  handleAttack(point: string): boolean {
+  handleAttack(point: string): Ship | false {
     if (!this.inLocations(point)) return false;
 
     let ship = this.ships.find(ship => ship.location.includes(point));
@@ -127,7 +127,7 @@ class Fleet {
     
     console.log(`${ship.name} was hit.`)
     ship.addHit();
-    return true;
+    return ship;
   }
 }
 

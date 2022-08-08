@@ -99,7 +99,7 @@ onUpdated(() => {
 }
 
 .chat-log[expanded="true"] {
-  height: calc(100vh - 5rem);
+  height: calc(100vh - 5.5rem);
   background-color: hsla(0, 0%, 20%, 0.85);
 }
 
@@ -158,6 +158,12 @@ li[from="Me"] {
 li[from="Me"]::before {
   display: none;
 }
+
+li[from="Status Report"] {
+  color: white;
+  background-color: firebrick;
+}
+
 .chat-log::-webkit-scrollbar {
   background-color: hsl(0, 0%, 20%);
   width: 0.5rem;
