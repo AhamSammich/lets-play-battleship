@@ -6,7 +6,7 @@ import ShipStatus from "./ShipStatus.vue";
 import { reactive, ref, Ref, onMounted } from "vue";
 import { Socket } from "socket.io-client";
 import { Message } from "../utils";
-import { Fleet } from "../ship";
+import { Fleet, Ship } from "../ship";
 
 const props = defineProps<{
   player: string;
@@ -23,9 +23,6 @@ let hideStatus = ref(false);
 let gameResult: Ref<"win" | "lose" | null> = ref(null);
 
 onMounted(() => {
-  props.socket.once("connect", () => {
-    props.socket.emit("ready", props.socket.id);
-  });
   setTimeout(() => (hideStatus.value = true), 3000);
 });
 
@@ -92,6 +89,10 @@ function endGame() {
   );
 }
 
+function handleSpecial(ship: Ship) {
+  // let special: SpecialCallback = getSpecial(ship)
+}
+
 // =========================
 // LISTENERS
 // =========================
@@ -142,6 +143,7 @@ props.socket.on("victory", () => {
     :collapse="hideStatus"
     @ship-sunk="(shipName) => sendStatus(shipName)"
     @all-sunk="endGame()"
+    @special=""
   />
   <section :id="player" class="board">
     <ul class="header">

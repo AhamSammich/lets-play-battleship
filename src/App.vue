@@ -6,7 +6,10 @@ import ChatBox from "./components/ChatBox.vue";
 import { Socket, io } from "socket.io-client";
 import { Ref, ref } from "vue";
 import { sleep } from "./utils";
-import { Player } from "./game";
+
+interface Player {
+  name: string;
+}
 
 let playerName = ref("");
 let socket: Ref<Socket | null> = ref(null);
@@ -16,6 +19,7 @@ const ready = ref(false);
 async function startGame(player: Player) {
   playerName.value = player.name;
   if (socket.value === null) socket.value = io("http://localhost:5500");
+
   if (socket.value?.disconnected) socket.value.connect();
   while (socket.value.disconnected) {
     console.log("Connecting...");
@@ -23,6 +27,9 @@ async function startGame(player: Player) {
   }
   document.getElementById("splash")?.classList.add("hidden");
   ready.value = true;
+  await sleep(3000);
+  console.log("Emitting 'ready'...")
+  socket.value?.emit("player-ready", socket.value.id);
 }
 
 function leaveGame() {
@@ -31,28 +38,27 @@ function leaveGame() {
   document.getElementById("splash")?.classList.remove("hidden");
 }
 
-function toggleChatSize() {fullChat.value = !fullChat.value}
+function toggleChatSize() {
+  fullChat.value = !fullChat.value;
+}
+
 </script>
 
 <template>
   <section id="splash" class="splash">
-    <StartSplash 
-      @new-player="(player: Player) => startGame(player)"
-      />
+    <StartSplash @new-player="(player: Player) => startGame(player)" />
   </section>
   <template v-if="ready">
     <section class="play-area">
       <Board :player="playerName" :socket="socket!" :actions="[]" />
     </section>
     <ChatBox :name="playerName" :socket="socket!" :expanded="fullChat" />
-    <NavBar position="bottom" @toggle-chat="toggleChatSize" @logout="leaveGame"/>
+    <NavBar position="bottom" @toggle-chat="toggleChatSize" @logout="leaveGame" />
   </template>
 </template>
 
 <style>
-@import url(
-  'https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,600;1,400&display=swap'
-  );
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,600;1,400&display=swap");
 
 * {
   box-sizing: border-box;

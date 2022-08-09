@@ -184,6 +184,7 @@ li[from="Status Report"] {
 .chat-log::-webkit-scrollbar {
   background-color: hsl(0, 0%, 20%);
   width: 0.5rem;
+  height: 0.5rem;
 }
 
 .chat-log::-webkit-scrollbar-thumb {

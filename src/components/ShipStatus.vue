@@ -17,6 +17,11 @@ function checkSunk(ship: Ship): boolean {
   if (reportedSunk.length === 5) emits("all-sunk");
   return true;
 }
+
+function useSpecial({ target }: Event) {
+  // let ship = fleet.ships.find(ship => ship.name === target.textContent);
+  // emits("special", ship);
+}
 </script>
 
 <template>

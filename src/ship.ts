@@ -8,7 +8,7 @@ const ShipSize = {
   Carrier: 5,
 } as const;
 
-type ShipType = keyof typeof ShipSize;
+export type ShipType = keyof typeof ShipSize;
 
 class Ship {
   type: ShipType;
@@ -28,8 +28,15 @@ class Ship {
     this.givenName = newName;
   }
 
-  get name() {
+  get name(): string {
     return this.givenName || this.id;
+  }
+
+  get orientation(): "vertical" | "horizontal" {
+    let getX = (coord: string) => coord.split("-")[0];
+    let [point1, point2] = [this.location[0], this.location[1]];
+    if (getX(point1) === getX(point2)) { return "vertical" };
+    return "horizontal";
   }
 
   addHit(numOfHits = 1) {
