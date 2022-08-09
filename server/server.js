@@ -1,8 +1,9 @@
-const { Message } = require("../server/cjs-utils.js");
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const { instrument } = require("@socket.io/admin-ui");
+const { Message } = require("../server/cjs-utils.js");
+const { Room } = require("../server/room.js");
 
 const app = express();
 const server = http.createServer(app);
@@ -17,46 +18,42 @@ instrument(io, {
   auth: false,
 });
 
-const ROOMS = {};
-
-io.on("connection", async (socket) => {
-  let key = Object.keys(ROOMS).find((key) => ROOMS[key].count < 2);
-  let roomId = key ? key : `Room #${Object.keys(ROOMS).length + 1}`;
-  if (key) {
-    let hostId = ROOMS[roomId].host;
-    if (hostId == undefined) {
-      ROOMS[roomId].host = socket.id;
-      hostId = ROOMS[roomId].host;
-    }
-    let room = ROOMS[roomId];
-    room.count++;
-    io.to(hostId).emit(
+function joinRoom(socketId) {
+  let room = Room.findAvailable();
+  if (room) {
+    room.join(socketId);
+    io.to(room.host).emit(
       "server-info",
       Message.format(
-        `User ${socket.id} has entered the room. ( ${room.count}/2 users connected )`,
+        `User ${socketId} has entered the room. ( ${room.count}/2 users connected )`,
         "Server"
       )
     );
   } else {
-    ROOMS[roomId] = { host: socket.id, count: 1 };
+    room = Room.open(socketId);
   }
-  socket.join(roomId);
+  console.log(`hostId: ${room.host}`);
+  return room.id;
+}
 
-  socket.on("ready", (id) => {
-    let room = ROOMS[roomId];
+io.on("connection", (socket) => {
+  const roomId = joinRoom(socket.id);
+  const room = Room.findById(roomId);
+  socket.join(roomId);
+  io.to(room.host).emit("player-turn", room.host);
+
+  socket.on("player-ready", (id) => {
     console.log(
       `User ${socket.id} connected to ${roomId}.\n\tHosted by ${room.host}.`
     );
-    io.timeout(3000).in(roomId).emit("player-turn", room.host);
-    io.timeout(3000)
-      .to(id)
-      .emit(
-        "server-info",
-        Message.format(
-          `You have entered ${roomId}. ( ${room.count}/2 users connected )`,
-          "Server"
-        )
-      );
+
+    io.to(id).emit(
+      "server-info",
+      Message.format(
+        `You have entered ${roomId}. ( ${room.count}/2 users connected )`,
+        "Server"
+      )
+    );
   });
 
   socket.on("message", (data) => {
@@ -77,18 +74,13 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("disconnecting", async () => {
-    let room = ROOMS[roomId];
-    room.count--;
     io.to(socket.id).emit("server-info", "You have been disconnected.");
     socket.leave(roomId);
-    if (socket.id === room.host) {
-      let sockets = await io.in(roomId).fetchSockets();
-      room.host = sockets[0]?.id;
-      console.log("\nNew host: " + room.host);
-    }
+    console.log(`\n${socket.id} disconnected from ${roomId}.`);
   });
 
   socket.on("disconnect", () => {
+    room.leave(socket.id);
     io.in(roomId).emit(
       "server-info",
       Message.format(`User ${socket.id} has disconnected.`, "Server")
