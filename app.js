@@ -10,5 +10,4 @@ app.get("/", (req, res) => {
 
 app.listen(8080, () => {
   console.log(`App is running on port 8080...`);
-  console.log(`${__dirname}/dist/index.html`);
 });
