@@ -19,11 +19,9 @@ function registerPlayer(id: string) {
 }
 
 function sendMessage() {
-  //@ts-ignore Type 'HTMLElement | null' is not assignable to type 'HTMLInputElement'.
-  //Type 'null' is not assignable to type 'HTMLInputElement'.ts(2322)
-  let input: HTMLInputElement = document.getElementById("chat-input");
-  if (input == null || input.value == null) return;
-  let json: string = Message.format(input.value, props.name);
+  let input = <HTMLInputElement>document.getElementById("chat-input");
+  if (input.value == null) return;
+  let json: string = Message.format(input.value, { from: props.name });
   props.socket.send(json);
   updateChat(json);
   input.value = "";
@@ -39,25 +37,20 @@ props.socket.on("server-info", (json: string) => {
 });
 
 props.socket.on("disconnect", (reason) => {
-  updateChat(Message.format(
-    `Disconnected from server. ( Reason: ${reason} )`,
-    "Server"
-  ));
+  updateChat(
+    Message.format(`Disconnected from server. ( Reason: ${reason} )`, { from: "Server" })
+  );
   if (reason !== "io client disconnect") props.socket.connect();
 });
 
 props.socket.on("reconnect_attempt", () => {
-  updateChat(Message.format(
-    "Reconnecting to server...",
-    "Server"
-  ));
+  updateChat(Message.format("Reconnecting to server...", { from: "Server" }));
 });
 
 props.socket.on("connect", () => {
-  updateChat(Message.format(
-    `You are connected. ( ID: ${props.socket.id} )`,
-    "Server"
-  ));
+  updateChat(
+    Message.format(`You are connected. ( ID: ${props.socket.id} )`, { from: "Server" })
+  );
 });
 
 async function updateChat(json: string) {

@@ -6,7 +6,7 @@ import ShipStatus from "./ShipStatus.vue";
 import { reactive, ref, Ref, onMounted } from "vue";
 import { Socket } from "socket.io-client";
 import { Message } from "../utils";
-import { Fleet, Ship } from "../ship";
+import { Fleet } from "../ship";
 import { Board } from "../board";
 
 const props = defineProps<{
@@ -14,7 +14,6 @@ const props = defineProps<{
   socket: Socket;
   actions: string[];
 }>();
-
 
 // =========================
 // REACTIVE / REF
@@ -45,37 +44,29 @@ async function flashStatus() {
   setTimeout(() => (hideStatus.value = true), 1000);
 }
 
-// function isValidResult(result: any): boolean {
-//   return ["hit", "miss"].includes(result);
-// }
-
 function sendTargetId(targetId: string | null): void {
   if (targetId == null) return;
   if (myTurn.value === false) return;
-  props.socket.emit("attack", Message.format(targetId, props.socket.id));
+  props.socket.emit("attack", Message.format(targetId, { from: props.socket.id }));
 }
 
 function checkForHit(targetId: string): void {
   let ship = fleet.handleAttack(targetId);
   if (ship) flashStatus();
   let result = ship ? "hit" : "miss";
-  let resultMsg = `${result.toUpperCase()} at ${targetId}`;
-  sendHitOrMiss(resultMsg);
+  sendHitOrMiss(result, targetId);
 }
 
-function sendHitOrMiss(resultMsg: string): void {
-  let resultData = Message.format(resultMsg, props.socket.id);
+function sendHitOrMiss(result: string, target: string): void {
+  let resultMsg = `${result.toUpperCase()} at ${target}`;
+  let resultData = Message.format(resultMsg, {
+    from: props.socket.id,
+    data: { target, result },
+  });
   props.actions.unshift(Message.format(`Opponent ${resultMsg}`));
   actionCount.value++;
   props.socket.emit("attack-result", resultData);
 }
-
-// function updateBoard(targetId: string, result: string): void {
-//   if (!isValidResult(result)) return;
-//   const targetElement: any = document.getElementById(targetId);
-//   targetElement.classList.add(result);
-//   targetElement.setAttribute("checked", "");
-// }
 
 function disableBoard() {
   const board: HTMLElement | null = document.querySelector(".board");
@@ -89,7 +80,7 @@ function enableBoard() {
 
 function sendStatus(shipName: string) {
   props.socket.send(
-    Message.format(`You sank ${props.player}'s ${shipName}!`, "Status Report")
+    Message.format(`You sank ${props.player}'s ${shipName}!`, { from: "Status Report" })
   );
 }
 
@@ -98,12 +89,14 @@ function endGame() {
   gameResult.value = "lose";
   setTimeout(() => (hideStatus.value = false), 1000);
   disableBoard();
-  props.socket.send(Message.format(`Congratulations! You've won!`, "Status Report"));
+  props.socket.send(
+    Message.format(`Congratulations! You've won!`, { from: "Status Report" })
+  );
 }
 
-function handleSpecial(ship: Ship) {
-  // let special: SpecialCallback = getSpecial(ship)
-}
+// function handleSpecial(ship: Ship) {
+//   let special: SpecialCallback = getSpecial(ship)
+// }
 
 // =========================
 // LISTENERS
@@ -116,9 +109,8 @@ props.socket.on("player-turn", (id: string) => {
 });
 
 props.socket.on("incoming-result", (json: string) => {
-  let resultData = Message.parse(json, "message").split(" at ");
-  let result = resultData[0].replace(" at ", "").trim();
-  let targetId = resultData[1].trim();
+  let result = Message.parse(json, "result");
+  let targetId = Message.parse(json, "target");
   props.actions.unshift(json);
   actionCount.value++;
   board.getSpaceById(targetId).result = result.toLowerCase();
@@ -135,7 +127,7 @@ props.socket.on("victory", () => {
   disableBoard();
   props.socket.emit(
     "message",
-    Message.format(`You've lost... Better luck next time!`, "Status Report")
+    Message.format(`You've lost... Better luck next time!`, { from: "Status Report" })
   );
 });
 </script>

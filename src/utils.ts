@@ -12,13 +12,22 @@ function sleep(ms=1000) {
 }
 
 class Message {
-
-    static format(msg: string, senderId?: string): string {
-        let json =  JSON.stringify({
+    static format(msg: string, options: {
+        from?: string,
+        data?: Record<string, any>,
+        }={}): string {
+        const { from, data } = options;
+        let obj: Record<string, any> = {
             "timestamp": this.addTimestamp(), 
             "message": msg, 
-            "from": senderId || "None"
-            });  
+            "from": from || "None"
+            }
+        if (data) {
+            for (let key in data) {
+                obj[key] = data[key];
+            }
+        }
+        let json =  JSON.stringify(obj);  
         return json; 
     };
 
@@ -30,7 +39,7 @@ class Message {
         return data;
     }
 
-    static addTimestamp(msg?: string): number {
+    static addTimestamp(): number {
         let timestamp = Date.now();
         return timestamp;
     }

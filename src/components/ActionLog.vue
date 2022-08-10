@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // @ts-ignore
-import { Message } from "../utils.ts";
+import { Message } from "../utils";
 
 const props = defineProps<{
   actionCount: number;
@@ -48,7 +48,7 @@ function getResultFromMsg(json?: string): string | void {
       <template v-for="i in actionCount">
         <li
           :data-time="Message.parse(sortedActions()[i - 1], 'timestamp')"
-          :class="getResultFromMsg(sortedActions()[i - 1])"
+          :class="Message.parse(sortedActions()[i - 1], 'result')"
         >
           {{ Message.parse(sortedActions()[i - 1], "message") }}
         </li>

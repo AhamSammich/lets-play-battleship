@@ -6,18 +6,16 @@ const props = defineProps<{
   result: string | null;
 }>();
 
-let checked = false;
 
 const emits = defineEmits(["attack"]);
 
 const id: string = `${props.column}-${props.row}`;
 
 function emitTargetId(): string | void {
-  if (checked) {
+  if (props.result !== null) {
     console.log(`${id} already checked.`);
     return;
   }
-  checked = true;
   return id;
 }
 </script>
