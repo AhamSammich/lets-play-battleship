@@ -1,7 +1,9 @@
 <script setup lang="ts">
+
 const props = defineProps<{
   row: number;
   column: number | string;
+  result: string | null;
 }>();
 
 let checked = false;
@@ -21,7 +23,7 @@ function emitTargetId(): string | void {
 </script>
 
 <template>
-  <div :id="id" @pointerup="$emit('attack', emitTargetId())"></div>
+  <div :id="id" :class="result" @pointerup="$emit('attack', emitTargetId())"></div>
 </template>
 
 <style scoped>

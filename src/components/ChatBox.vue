@@ -95,27 +95,36 @@ onUpdated(() => {
 
 <style scoped>
 #chat {
+  --input-bottom: 2rem;
+  --input-height: 2rem;
   width: 100%;
-  position: fixed;
-  bottom: calc(0vh + 2rem);
 }
 .chat-log {
   font-size: large;
   width: 100%;
-  height: 7.5em;
+  max-height: 10vh;
   color: palegoldenrod;
   background-color: hsla(0, 0%, 20%, 0.7);
   padding: 0.5em 1em;
   display: flex;
   flex-direction: column;
   gap: 0.2em;
+  position: fixed;
+  bottom: calc(var(--input-bottom) + var(--input-height));
   overflow-y: scroll;
   text-align: left;
   list-style: none;
   transition: height 100ms linear, background-color 300ms linear;
 }
 
+@media (max-height: 600px) {
+  .chat-log[expanded="false"] {
+    display: none;
+  }
+}
+
 .chat-log[expanded="true"] {
+  max-height: unset;
   height: calc(100vh - 5.5rem);
   background-color: hsla(0, 0%, 20%, 0.85);
 }
@@ -195,6 +204,9 @@ input {
   width: 100%;
   height: 2rem;
   padding: 0.25rem;
+  position: fixed;
+  left: 0;
+  bottom: var(--input-bottom);
   background-color: ghostwhite;
   border: 0.2rem inset whitesmoke;
 }

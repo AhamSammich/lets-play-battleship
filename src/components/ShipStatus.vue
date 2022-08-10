@@ -64,7 +64,7 @@ function useSpecial({ target }: Event) {
 .ship {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.5em;
+  gap: 1em;
   text-align: left;
 }
 
@@ -84,7 +84,7 @@ function useSpecial({ target }: Event) {
 .hp > * {
   width: 1em;
   height: 0.5em;
-  margin: 0.2em;
+  margin: 0.5em 0.25em;
   background-color: palegreen;
   box-shadow: 0.05em -0.05em 0.1em 0.05em lightseagreen;
   border-radius: 0.1em;

@@ -17,7 +17,6 @@ function toggleFullLog() {
   let bar = document.querySelector(".log");
   let items = log ? Array.from(log.children) : null;
   log?.toggleAttribute("hidden");
-  bar?.toggleAttribute("shifted");
   document.querySelector("#arrow")?.classList.toggle("rot-180");
   items?.[items.length - 1].scrollIntoView();
 }
@@ -95,7 +94,7 @@ function getResultFromMsg(json?: string): string | void {
   height: 25em;
   width: 100%;
   padding: 1em 2em;
-  top: calc(-100vh / 2 - 2rem);
+  top: 2.75em;
   overflow-y: scroll;
   list-style: none;
   transform-origin: bottom;

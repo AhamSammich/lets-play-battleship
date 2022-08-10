@@ -2,6 +2,11 @@ function checkSuccess(successRate: number): boolean {
     return Math.floor(100 * Math.random()) < successRate
 }
 
+function chooseRandom<T>(arr: Array<T>) {
+    let index = Math.floor(Math.random() * arr.length);
+    return arr[index];
+}
+
 function sleep(ms=1000) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -41,6 +46,7 @@ class Message {
 
 export {
     checkSuccess, 
+    chooseRandom,
     sleep,
     Message
 }

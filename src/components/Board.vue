@@ -7,6 +7,7 @@ import { reactive, ref, Ref, onMounted } from "vue";
 import { Socket } from "socket.io-client";
 import { Message } from "../utils";
 import { Fleet, Ship } from "../ship";
+import { Board } from "../board";
 
 const props = defineProps<{
   player: string;
@@ -14,12 +15,25 @@ const props = defineProps<{
   actions: string[];
 }>();
 
+
+// =========================
+// REACTIVE / REF
+// =========================
+
+// Triggers ActionLog update
 let actionCount = ref(0);
+
+// Triggers ShipStatus update
+let hideStatus = ref(false);
 let fleet = reactive(
   new Fleet(props.player, ["Carrier", "Cruiser", "Destroyer", "Submarine", "Frigate"])
 );
+
+// Triggers TargetSpace update
+let board = reactive(new Board("main", 10, 10));
+
+// Triggers StatusBar update
 let myTurn = ref(false);
-let hideStatus = ref(false);
 let gameResult: Ref<"win" | "lose" | null> = ref(null);
 
 onMounted(() => {
@@ -31,9 +45,9 @@ async function flashStatus() {
   setTimeout(() => (hideStatus.value = true), 1000);
 }
 
-function isValidResult(result: any): boolean {
-  return ["hit", "miss"].includes(result);
-}
+// function isValidResult(result: any): boolean {
+//   return ["hit", "miss"].includes(result);
+// }
 
 function sendTargetId(targetId: string | null): void {
   if (targetId == null) return;
@@ -56,12 +70,12 @@ function sendHitOrMiss(resultMsg: string): void {
   props.socket.emit("attack-result", resultData);
 }
 
-function updateBoard(targetId: string, result: string): void {
-  if (!isValidResult(result)) return;
-  const targetElement: any = document.getElementById(targetId);
-  targetElement.classList.add(result);
-  targetElement.setAttribute("checked", "");
-}
+// function updateBoard(targetId: string, result: string): void {
+//   if (!isValidResult(result)) return;
+//   const targetElement: any = document.getElementById(targetId);
+//   targetElement.classList.add(result);
+//   targetElement.setAttribute("checked", "");
+// }
 
 function disableBoard() {
   const board: HTMLElement | null = document.querySelector(".board");
@@ -84,9 +98,7 @@ function endGame() {
   gameResult.value = "lose";
   setTimeout(() => (hideStatus.value = false), 1000);
   disableBoard();
-  props.socket.send(
-    Message.format(`Congratulations! You've won!`, "Status Report")
-  );
+  props.socket.send(Message.format(`Congratulations! You've won!`, "Status Report"));
 }
 
 function handleSpecial(ship: Ship) {
@@ -99,7 +111,7 @@ function handleSpecial(ship: Ship) {
 
 props.socket.on("player-turn", (id: string) => {
   if (gameResult.value !== null) return;
-  myTurn.value = (id === props.socket.id);
+  myTurn.value = id === props.socket.id;
   myTurn.value ? enableBoard() : disableBoard();
 });
 
@@ -109,7 +121,7 @@ props.socket.on("incoming-result", (json: string) => {
   let targetId = resultData[1].trim();
   props.actions.unshift(json);
   actionCount.value++;
-  updateBoard(targetId, result.toLowerCase());
+  board.getSpaceById(targetId).result = result.toLowerCase();
 });
 
 props.socket.on("incoming-attack", (json) => {
@@ -157,6 +169,7 @@ props.socket.on("victory", () => {
           <TargetSpace
             :column="x"
             :row="y"
+            :result="board.getSpaceById(`${x}-${y}`).result"
             @attack="(id: string | null) => sendTargetId(id)"
           />
         </template>
@@ -169,7 +182,12 @@ props.socket.on("victory", () => {
 // ================================== // STYLE // ==================================
 
 <style>
-section {
+body {
+  --square-size: 40px;
+  --status-height: 40%;
+}
+
+.board {
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -182,6 +200,7 @@ ul.header {
   font-weight: bold;
   color: hsl(0, 0%, 20%);
   padding-top: 1rem;
+  /* padding-top: var(--status-height); */
   padding-bottom: 0.5em;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
