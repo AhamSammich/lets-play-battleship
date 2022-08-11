@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// @ts-ignore
 import { Message } from "../utils";
 
 const props = defineProps<{
@@ -14,23 +13,15 @@ function sortedActions() {
 //TODO: Split log into Player/Opponent columns.
 function toggleFullLog() {
   let log = document.querySelector(".expanded");
-  let bar = document.querySelector(".log");
   let items = log ? Array.from(log.children) : null;
   log?.toggleAttribute("hidden");
   document.querySelector("#arrow")?.classList.toggle("rot-180");
   items?.[items.length - 1].scrollIntoView();
 }
-
-function getResultFromMsg(json?: string): string | void {
-  if (json == null) return;
-  let msg = Message.parse(json, "message");
-  return msg?.split(" ")[0].toLowerCase();
-}
 </script>
 
 <template>
   <section class="log" id="action-log">
-    <!-- Show most recent action at bottom of viewport -->
     <div class="collapsed" @pointerup="toggleFullLog()">
       <img src="../assets/history-line.png" alt="history" style="height: 2em" />
       <p>{{ Message.parse(actions?.[0], "message") }}</p>

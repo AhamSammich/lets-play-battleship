@@ -22,14 +22,13 @@ async function startGame(player: Player) {
 
   if (socket.value?.disconnected) socket.value.connect();
   while (socket.value.disconnected) {
-    console.log("Connecting...");
+    console.log("%cConnecting...", "color: seagreen; font-weight: bold;");
     await sleep();
   }
   document.getElementById("splash")?.classList.add("hidden");
   ready.value = true;
   await sleep(3000);
-  console.log("Emitting 'ready'...")
-  socket.value?.emit("player-ready", socket.value.id);
+  socket.value?.emit("player-ready", socket.value.id, player.name);
 }
 
 function leaveGame() {
