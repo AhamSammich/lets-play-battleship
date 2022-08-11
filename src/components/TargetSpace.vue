@@ -27,11 +27,11 @@ function emitTargetId(): string | void {
 <style scoped>
 div {
   /* width: clamp(30px, calc(100vw / 15), 40px); */
-  width: 40px;
+  width: var(--square-size);
   aspect-ratio: 1/1;
-  background-color: steelblue;
-  border: 0.05em solid white;
-  border-radius: 3px;
+  background-color: var(--app-blue);
+  border: 0.05em solid var(--app-bkgd);
+  border-radius: 0.3em;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -41,14 +41,14 @@ div {
 
 div:hover {
   box-shadow: inset 0 0 0.5em 0.1em hsla(0, 0%, 20%, 0.3),
-    inset 0 0 0.5em 0.5em palegoldenrod;
+    inset 0 0 0.5em 0.5em lightgoldenrodyellow;
 }
 
 .hit {
-  background-color: firebrick;
+  background-color: var(--app-red);
 }
 
 .miss {
-  background-color: whitesmoke;
+  background-color: var(--app-white);
 }
 </style>

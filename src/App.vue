@@ -70,15 +70,19 @@ function toggleChatSize() {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
   margin-top: 2vh;
 }
 
 body {
+  --app-bkgd: hsl(0, 0%, 85%);
+  --app-blue: hsl(207 44% 49% / 0.9);
+  --app-red: hsl(0 68% 42% / 0.9);
+  --app-white: hsl(0 0% 96% / 0.9);
+  --app-black: hsl(0 0% 20% / 0.9);
   font-size: 10px;
   width: clamp(320px, 100vw, 1000px);
   min-height: 100vh;
-  background-color: hsl(0, 0%, 85%);
+  background-color: var(--app-bkgd);
   display: grid;
   grid-template-rows: max-content 1fr max-content;
 }

@@ -59,7 +59,7 @@ function toggleFullLog() {
   width: 100%;
   margin-top: 0.5rem;
   background-color: hsla(0, 0%, 20%, 0.5);
-  color: palegoldenrod;
+  color: lightgoldenrodyellow;
   border-radius: 3px;
   box-shadow: 0.1em -0.1em 0.3em 0.1em hsla(0, 0%, 20%, 0.9);
   cursor: pointer;
@@ -100,12 +100,12 @@ function toggleFullLog() {
 }
 
 .expanded::-webkit-scrollbar {
-  background-color: hsl(0, 0%, 20%);
+  background-color: var(--app-black);
   width: 0.5rem;
 }
 
 .expanded::-webkit-scrollbar-thumb {
-  background-color: white;
+  background-color: var(--app-white);
 }
 
 li {
@@ -120,7 +120,7 @@ li.hit {
 }
 
 li.miss {
-  color: whitesmoke;
+  color: white;
   text-shadow: 0.1em 0.1em 3em whitesmoke;
 }
 
@@ -140,7 +140,7 @@ li::before {
 li::before {
   content: "You";
   color: lightgoldenrodyellow;
-  background-color: steelblue;
+  background-color: var(--app-blue);
   margin-right: 2em;
   float: left;
 }
@@ -152,8 +152,9 @@ li:not([data-from="None"])::after {
 
 li[data-from="None"]::after {
   content: "Opp";
-  color: white;
-  background-color: hsl(0, 0%, 20%);
+  color: var(--app-black);
+  font-weight: bold;
+  background-color: lightgoldenrodyellow;
   margin-left: 2em;
   float: right;
 }
@@ -182,13 +183,13 @@ p::after {
 }
 
 p.hit::after {
-  background-color: firebrick;
+  background-color: var(--app-red);
   box-shadow: 0 0 1em 0.01em red;
 }
 
 p.miss::after {
-  background-color: white;
-  box-shadow: 0 0 1em 0.01em whitesmoke;
+  background-color: var(--app-white);
+  box-shadow: 0 0 1em 0.01em white;
 }
 
 p[data-from="None"] {

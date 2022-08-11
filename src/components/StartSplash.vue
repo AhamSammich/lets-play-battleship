@@ -57,21 +57,21 @@ button {
   padding: 0.25rem 0.5rem;
   height: 5rem;
   width: 20rem;
-  background-color: hsl(25 100% 97%);
-  color: hsl(0 0% 20%);
-  border: 0.05rem solid hsl(25, 100%, 97%);
+  background-color: var(--app-white);
+  color: var(--app-black);
+  border: 0.05rem solid  var(--app-white);
   border-radius: 0.3rem;
   box-shadow: 0.05rem -0.05rem 0.5rem 0.1rem hsl(0 0% 20% / 0.5);
 }
 
 button {
   font-weight: bold;
-  background-color: steelblue;
+  background-color: var(--app-blue);
   color: lightgoldenrodyellow;
 }
 
 button:hover {
   background-color: lightgoldenrodyellow;
-  color: steelblue;
+  color: var(--app-blue);
 }
 </style>

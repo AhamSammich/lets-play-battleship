@@ -136,7 +136,7 @@ li {
   width: fit-content;
   padding: 0.5em 0.75em;
   color: white;
-  background-color: #333;
+  background-color: var(--app-black);
   border-radius: 0.5em;
 }
 
@@ -152,7 +152,7 @@ li::before {
   content: attr(from);
   font-size: xx-small;
   font-weight: bold;
-  color: #333;
+  color: var(--app-black);
   background-color: lightgoldenrodyellow;
   margin-bottom: 0.5em;
 }
@@ -164,13 +164,13 @@ li[from="Server"]::after {
 }
 
 li[from="Server"]::before {
-  color: #333;
+  color: var(--app-black);
   background-color: white;
 }
 
 li[from="Me"] {
   color: lightgoldenrodyellow;
-  background-color: steelblue;
+  background-color: var(--app-blue);
   align-self: flex-end;
 }
 
@@ -180,7 +180,7 @@ li[from="Me"]::before {
 
 li[from="Status Report"] {
   color: white;
-  background-color: firebrick;
+  background-color: var(--app-red);
 }
 
 .chat-log::-webkit-scrollbar {
