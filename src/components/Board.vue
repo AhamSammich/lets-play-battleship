@@ -6,7 +6,7 @@ import ShipStatus from "./ShipStatus.vue";
 import { reactive, ref, Ref, onMounted } from "vue";
 import { Socket } from "socket.io-client";
 import { Message } from "../utils";
-import { Fleet } from "../ship";
+import { Fleet, Ship } from "../ship";
 import { Board } from "../board";
 
 const props = defineProps<{
@@ -63,7 +63,7 @@ function sendHitOrMiss(result: string, target: string): void {
     from: props.socket.id,
     data: { target, result },
   });
-  props.actions.unshift(Message.format(`Opponent ${resultMsg}`));
+  props.actions.unshift(Message.format(resultMsg, { data: { result } }));
   actionCount.value++;
   props.socket.emit("attack-result", resultData);
 }

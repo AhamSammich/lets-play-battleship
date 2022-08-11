@@ -95,7 +95,7 @@ onUpdated(() => {
 .chat-log {
   font-size: large;
   width: 100%;
-  max-height: 10vh;
+  max-height: 15%;
   color: palegoldenrod;
   background-color: hsla(0, 0%, 20%, 0.7);
   padding: 0.5em 1em;

@@ -10,13 +10,13 @@ function sortedActions() {
   return [...props.actions].reverse();
 }
 
-//TODO: Split log into Player/Opponent columns.
 function toggleFullLog() {
   let log = document.querySelector(".expanded");
   let items = log ? Array.from(log.children) : null;
+  if (items === null || items.length === 0) return;
   log?.toggleAttribute("hidden");
   document.querySelector("#arrow")?.classList.toggle("rot-180");
-  items?.[items.length - 1].scrollIntoView();
+  items[items.length - 1].scrollIntoView();
 }
 </script>
 
@@ -24,7 +24,12 @@ function toggleFullLog() {
   <section class="log" id="action-log">
     <div class="collapsed" @pointerup="toggleFullLog()">
       <img src="../assets/history-line.png" alt="history" style="height: 2em" />
-      <p>{{ Message.parse(actions?.[0], "message") }}</p>
+      <p 
+        :data-from="Message.parse(actions?.[0], 'from')"
+        :class="Message.parse(actions?.[0], 'result')"
+      >
+        {{ Message.parse(actions?.[0], "message") }}
+      </p>
       <img
         id="arrow"
         class="rot-180"
@@ -35,10 +40,10 @@ function toggleFullLog() {
     </div>
 
     <!-- Show full log as overlay -->
-    <ul class="expanded" hidden>
+    <ul class="expanded" hidden @pointerup="toggleFullLog()">
       <template v-for="i in actionCount">
         <li
-          :data-time="Message.parse(sortedActions()[i - 1], 'timestamp')"
+          :data-from="Message.parse(sortedActions()[i - 1], 'from')"
           :class="Message.parse(sortedActions()[i - 1], 'result')"
         >
           {{ Message.parse(sortedActions()[i - 1], "message") }}
@@ -63,6 +68,8 @@ function toggleFullLog() {
 
 .collapsed {
   max-height: 3rem;
+  letter-spacing: 0.05em;
+  font-weight: bold;
   padding: 0.25rem;
   display: flex;
   flex-direction: row;
@@ -77,34 +84,19 @@ function toggleFullLog() {
   flex-direction: column;
   gap: 0.1em;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: flex-end;
   position: absolute;
-  background-color: hsla(0, 0%, 20%, 0.95);
+  background-color: hsla(0, 0%, 20%, 0.9);
   box-shadow: 0.1em -0.1em 0.3em 0.1em hsla(0, 0%, 20%, 0.9);
   border-radius: 3px;
   height: 25em;
   width: 100%;
-  padding: 1em 2em;
+  padding: 1em;
   top: 2.75em;
   overflow-y: scroll;
   list-style: none;
   transform-origin: bottom;
   transition: transform 200ms linear;
-}
-
-li {
-  width: 100%;
-}
-
-li::after {
-  content: attr(data-time);
-  font-size: small;
-  padding: 0.2em;
-  color: palegoldenrod;
-  background-color: #333;
-  border-radius: 10%;
-  vertical-align: middle;
-  float: right;
 }
 
 .expanded::-webkit-scrollbar {
@@ -115,18 +107,135 @@ li::after {
 .expanded::-webkit-scrollbar-thumb {
   background-color: white;
 }
+
+li {
+  width: 100%;
+  letter-spacing: 0.03em;
+  text-align: left;
+}
+
+li.hit {
+  color: red;
+  text-shadow: 0.1em 0.1em 3em firebrick;
+}
+
+li.miss {
+  color: whitesmoke;
+  text-shadow: 0.1em 0.1em 3em whitesmoke;
+}
+
+li[data-from="None"] {
+  text-align: right;
+}
+
+li::after,
+li::before {
+  font-size: x-small;
+  padding: 0.2em 0.5em;
+  border-radius: 10%;
+  vertical-align: middle;
+  text-shadow: none;
+}
+
+li::before {
+  content: "You";
+  color: lightgoldenrodyellow;
+  background-color: steelblue;
+  margin-right: 2em;
+  float: left;
+}
+
+li[data-from="None"]::before,
+li:not([data-from="None"])::after {
+  display: none;
+}
+
+li[data-from="None"]::after {
+  content: "Opp";
+  color: white;
+  background-color: hsl(0, 0%, 20%);
+  margin-left: 2em;
+  float: right;
+}
+
 img {
   max-height: inherit;
   margin: 0.5em;
   transition: transform 200ms linear;
 }
 
-.hit {
-  color: red;
+p {
+  animation: fadeFromLeft 1s ease-out;
+  position: relative;
 }
 
-.miss {
-  color: whitesmoke;
+p::after {
+  content: "";
+  display: block;
+  border-radius: 0.3em;
+  height: 0.1em;
+  width: 100%;
+  position: absolute;
+  margin-top: 0.6em;
+  opacity: 0;
+  animation: slideScale 3s linear infinite 1s;
+}
+
+p.hit::after {
+  background-color: firebrick;
+  box-shadow: 0 0 1em 0.01em red;
+}
+
+p.miss::after {
+  background-color: white;
+  box-shadow: 0 0 1em 0.01em whitesmoke;
+}
+
+p[data-from="None"] {
+  animation: fadeFromRight 1s ease-out;
+}
+
+p[data-from="None"]::after {
+  animation-direction: reverse;
+}
+
+@keyframes fadeFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideScale {
+  from {
+    transform-origin: left;
+    transform: scaleX(3) scaleY(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scaleX(0.25) scaleY(1);
+    opacity: 1;
+  }
+  to {
+    transform-origin: right;
+    transform: scaleX(3) scaleY(0);
+    opacity: 0;
+  }
 }
 
 .rot-180 {
@@ -137,4 +246,5 @@ img {
   transition: transform 200ms linear;
   transform: scaleY(0);
 }
+
 </style>
