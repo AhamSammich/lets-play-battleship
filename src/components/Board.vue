@@ -36,7 +36,7 @@ let myTurn = ref(false);
 let gameResult: Ref<"win" | "lose" | null> = ref(null);
 
 onMounted(() => {
-  setTimeout(() => (hideStatus.value = true), 3000);
+  setTimeout(() => (hideStatus.value = true), 2500);
 });
 
 async function flashStatus() {

@@ -18,7 +18,13 @@ const ready = ref(false);
 
 async function startGame(player: Player) {
   playerName.value = player.name;
-  if (socket.value === null) socket.value = io("http://localhost:5055");
+
+  // EXPERIMENTAL Reveal the assigned port
+  let port = await fetch(`${window.location.origin}/port`)
+    .then(res => res.json());
+  console.log(port);
+  // if (socket.value === null) socket.value = io(`http://localhost:${port}`);
+  if (socket.value === null) socket.value = io(`${window.location.origin}`);
 
   if (socket.value?.disconnected) socket.value.connect();
   while (socket.value.disconnected) {
@@ -32,9 +38,12 @@ async function startGame(player: Player) {
 }
 
 function leaveGame() {
-  ready.value = false;
-  socket.value?.disconnect();
-  document.getElementById("splash")?.classList.remove("hidden");
+  // ready.value = false;
+  // socket.value?.disconnect();
+  // document.getElementById("splash")?.classList.remove("hidden");
+
+  // EXPERIMENTAL Refresh page on logout
+  window.location.reload();
 }
 
 function toggleChatSize() {

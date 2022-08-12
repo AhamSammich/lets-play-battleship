@@ -1,7 +1,7 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const { handleConnection } = require("./server/server");
+const { handleConnection } = require("./server/server")
 
 const app = express();
 const server = http.createServer(app);
@@ -14,6 +14,11 @@ app.use(express.static("dist"));
 app.get("/", (req, res) => {
   res.sendFile(`${__dirname}/dist/index.html`);
 });
+
+// EXPERIMENTAL Reveal the assigned port
+app.get("/port", (req, res) => {
+  res.send(`${port}`);
+})
 
 io.on("connection", (socket) => handleConnection(socket, io));
 

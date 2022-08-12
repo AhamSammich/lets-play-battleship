@@ -9,6 +9,10 @@ const props = defineProps<{
   expanded: boolean;
 }>();
 
+const emits = defineEmits([
+  "toggle-chat"
+]);
+
 const msgCount = ref(0);
 const messages: Ref<string[]> = ref([]);
 const players: Record<string, string> = { Server: "Server" };
@@ -65,7 +69,7 @@ onUpdated(() => {
 
 <template>
   <section id="chat">
-    <ul class="chat-log" :count="msgCount" :expanded="expanded">
+    <ul class="chat-log" :count="msgCount" :expanded="expanded" @pointerup="$emit('toggle-chat')">
       <template v-for="i in messages?.length">
         <li
           :data-time="Message.parse(messages?.[i - 1], 'timestamp')"
