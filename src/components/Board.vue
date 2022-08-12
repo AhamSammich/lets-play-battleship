@@ -123,7 +123,7 @@ props.socket.on("incoming-attack", (json) => {
 
 props.socket.on("victory", () => {
   gameResult.value = "win";
-  setTimeout(() => (hideStatus.value = false), 1000);
+  setTimeout(() => (hideStatus.value = false), 1500);
   disableBoard();
   props.socket.emit(
     "message",
