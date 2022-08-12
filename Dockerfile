@@ -3,15 +3,21 @@ FROM node:18.7.0
 ENV NODE_ENV=production
 
 WORKDIR /app
-
 COPY ["package.json", "package-lock.json*", "./"]
+RUN npm install
 
-RUN npm install --production
+WORKDIR /app/server
+COPY ["server/package.json", "server/package-lock.json*", "./"]
+RUN npm install
 
-COPY ["app.js", "server", "dist", "./"]
 
-ENV PORT=8080
+WORKDIR /app
+COPY ["app.js","./"]
+COPY ["server","./server"]
+COPY ["dist","./dist"]
 
-EXPOSE 8080
+ENV PORT=8088
 
-CMD ["npm", "prod:start-server"]
+EXPOSE 8088 5055
+
+CMD ["npm", "start"]

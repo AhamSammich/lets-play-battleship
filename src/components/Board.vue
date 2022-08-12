@@ -41,7 +41,7 @@ onMounted(() => {
 
 async function flashStatus() {
   hideStatus.value = false;
-  setTimeout(() => (hideStatus.value = true), 1000);
+  setTimeout(() => (hideStatus.value = true), 1500);
 }
 
 function sendTargetId(targetId: string | null): void {
@@ -87,7 +87,7 @@ function sendStatus(shipName: string) {
 function endGame() {
   props.socket.emit("game-over");
   gameResult.value = "lose";
-  setTimeout(() => (hideStatus.value = false), 1000);
+  setTimeout(() => (hideStatus.value = false), 1500);
   disableBoard();
   props.socket.send(
     Message.format(`Congratulations! You've won!`, { from: "Status Report" })

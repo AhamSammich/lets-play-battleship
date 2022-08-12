@@ -18,7 +18,7 @@ const ready = ref(false);
 
 async function startGame(player: Player) {
   playerName.value = player.name;
-  if (socket.value === null) socket.value = io("http://localhost:5500");
+  if (socket.value === null) socket.value = io("http://localhost:5055");
 
   if (socket.value?.disconnected) socket.value.connect();
   while (socket.value.disconnected) {

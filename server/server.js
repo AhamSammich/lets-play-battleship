@@ -1,7 +1,6 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const { instrument } = require("@socket.io/admin-ui");
 const { Message } = require("../server/cjs-utils.js");
 const { Room } = require("../server/room.js");
 
@@ -12,10 +11,6 @@ const io = new Server(server, {
     origin: "*",
     methods: ["GET", "POST"],
   },
-});
-
-instrument(io, {
-  auth: false,
 });
 
 function joinRoom(socketId) {
@@ -103,6 +98,4 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(5500, () => {
-  console.log("Server running on port 5500...");
-});
+module.exports = server;
