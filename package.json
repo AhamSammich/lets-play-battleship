@@ -6,15 +6,14 @@
     "test": "jest",
     "start": "node app.js",
     "dev": "vite",
-    "start-server": "cd server && npm run start",
-    "dev:start-server": "npm-run-all -p dev start-server",
     "build": "vue-tsc --noEmit && vite build",
     "move-icon": "mv dist/favicon.ico dist/assets/",
     "build-move": "npm-run-all build move-icon",
-    "preview": "npm-run-all -p start-server start"
+    "preview": "vite preview"
   },
   "dependencies": {
     "express": "^4.18.1",
+    "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
     "vue": "^3.2.25"
   },
