@@ -38,6 +38,7 @@ function announceUser(socket, room, server) {
     );
 }
 
+// FEATURE Warn/disconnect idle player
 function handleConnection(socket, server) {
     const io = server;
 

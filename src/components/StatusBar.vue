@@ -21,54 +21,87 @@ function getStatusMsg(): string {
 
 <template>
   <section id="status-bar" :class="playerTurn ? 'active' : ''" @click="$emit('toggle-status')">
-    <p><strong>{{ playerName }}</strong> <em><small>ID: {{ playerId }}</small></em></p>
+    <p class="uid">{{ playerName }} <span>ID:{{ playerId }}</span></p>
     <p class="turn-status"><small>{{ getStatusMsg() }}</small></p>
   </section>
 </template>
 
 <style scoped>
 #status-bar {
-  --color1: hsl(207 44% 49% / 0.9);
-  --color2: hsl(0 0% 20% / 0.9);
+  --color1: 207 44% 49%;
+  --color2: 0 0% 20%;
+  --alpha: 0.9;
+  --hsl: var(--color2);
+  --bar-color: hsl(var(--hsl) / var(--alpha));
+  font-size: smaller;
   letter-spacing: 0.05em;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 0.2rem 1rem;
+  padding: 0.25rem 1rem;
   position: fixed;
   top: 0vh;
   left: 0vw;
   z-index: 5;
   width: 100%;
   height: var(--status-bar);
-  background-color: var(--color2);
+  background-color: var(--bar-color);
   color: white;
   cursor: pointer;
 }
 
+#status-bar.active {
+  --hsl: var(--color1);
+}
+
+p.uid {
+  max-width: 60%;
+  font-weight: bold;
+  text-align: left;
+}
+
+p.uid > span {
+  font-size: smaller;
+  font-weight: normal;
+  font-style: italic;
+}
+
+p.turn-status {
+  width: 30%;
+  transform-origin: center;
+  animation: sway 10s alternate infinite linear;
+  z-index: 1;
+}
+
 @media (orientation: landscape) {
   #status-bar {
-    width: calc(100% - var(--nav-size));
+    width: calc(50% - var(--nav-size));
     left: var(--nav-size);
   }
 }
 
-#status-bar.active {
-  background-color: var(--color1);
-}
-
-p.turn-status {
-  transform-origin: right;
-  animation: textCrawl 10s infinite linear;
-}
-
-@keyframes textCrawl {
-  50% {
-    transform: translateX(-50%);
+@media (max-width: 600px) {
+  #status-bar {
+    flex-direction: column;
   }
-  100% {
+
+  p.uid, p.turn-status {
+    max-width: 100%;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@keyframes sway {
+  from {
+    transform: translateX(-15%);
+  }
+  50% {
     transform: translateX(0);
+    }
+  100% {
+    transform: translateX(5%);
   }
 }
 </style>

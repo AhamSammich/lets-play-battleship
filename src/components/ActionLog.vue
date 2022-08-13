@@ -55,22 +55,22 @@ function toggleFullLog() {
 
 <style scoped>
 .log {
-  font-size: large;
+  /* font-size: larger; */
   width: 100%;
   margin-top: 0.5rem;
   background-color: hsla(0, 0%, 20%, 0.5);
   color: lightgoldenrodyellow;
-  border-radius: 3px;
+  border-radius: 0.2rem;
   box-shadow: 0.1em -0.1em 0.3em 0.1em hsla(0, 0%, 20%, 0.9);
   cursor: pointer;
   transition: transform 300ms linear;
 }
 
 .collapsed {
-  max-height: 3rem;
+  max-height: 3em;
   letter-spacing: 0.05em;
   font-weight: bold;
-  padding: 0.25rem;
+  padding: 0.25em;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -79,7 +79,7 @@ function toggleFullLog() {
 }
 
 .expanded {
-  font-size: medium;
+  font-size: inherit;
   display: flex;
   flex-direction: column;
   gap: 0.1em;
@@ -88,15 +88,21 @@ function toggleFullLog() {
   position: absolute;
   background-color: hsla(0, 0%, 20%, 0.9);
   box-shadow: 0.1em -0.1em 0.3em 0.1em hsla(0, 0%, 20%, 0.9);
-  border-radius: 3px;
+  border-radius: 0.2rem;
   height: calc(var(--square-size) * 10);
   width: 100%;
   padding: 1em;
-  top: calc(var(--board-top) + 1.5rem);
+  top: calc(var(--board-top) + 1.5em);
   overflow-y: scroll;
   list-style: none;
   transform-origin: bottom;
   transition: transform 200ms linear;
+}
+
+@media (max-width: 400px) {
+  .expanded {
+    gap: 0.5em;
+  }
 }
 
 .expanded::-webkit-scrollbar {
@@ -130,8 +136,8 @@ li[data-from="None"] {
 
 li::after,
 li::before {
-  font-size: x-small;
-  padding: 0.2em 0.5em;
+  font-size: smaller;
+  padding: 0.1em 0.25em;
   border-radius: 10%;
   vertical-align: middle;
   text-shadow: none;
@@ -177,7 +183,8 @@ p::after {
   height: 0.1em;
   width: 100%;
   position: absolute;
-  margin-top: 0.6em;
+  bottom: 0;
+  /* margin-top: 0.6em; */
   opacity: 0;
   animation: slideScale 3s linear infinite 1s;
 }
@@ -225,16 +232,16 @@ p[data-from="None"]::after {
 @keyframes slideScale {
   from {
     transform-origin: left;
-    transform: scaleX(3) scaleY(0);
+    transform: scaleX(2.5) scaleY(0);
     opacity: 0;
   }
   50% {
-    transform: scaleX(0.25) scaleY(1);
+    transform: scaleX(0.5) scaleY(1);
     opacity: 1;
   }
   to {
     transform-origin: right;
-    transform: scaleX(3) scaleY(0);
+    transform: scaleX(2.5) scaleY(0);
     opacity: 0;
   }
 }

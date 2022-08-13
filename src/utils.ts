@@ -46,10 +46,16 @@ class Message {
 
     static showLast(selector: string) {
         let chat = document.querySelector(selector);
-        let items = chat ? Array.from(chat.children) : null;
-        if (items && items.length > 1) items[items.length-1].scrollIntoView({
-          behavior: "smooth", block: "end",
-        });
+        // let items = chat ? Array.from(chat.children) : null;
+        // if (items && items.length > 1) items[items.length-1].scrollIntoView({
+        //   behavior: "smooth", block: "end",
+        // });
+        // EXPERIMENT
+        chat?.scrollTo({
+            top: chat.scrollHeight,
+            left: 0,
+            behavior: "smooth"
+        })
     }
 }
 

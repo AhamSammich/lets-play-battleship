@@ -6,6 +6,7 @@ import ChatBox from "./components/ChatBox.vue";
 import { Socket, io } from "socket.io-client";
 import { Ref, ref } from "vue";
 import { sleep } from "./utils";
+import { rejects } from "assert";
 
 interface Player {
   name: string;
@@ -16,22 +17,38 @@ let socket: Ref<Socket | null> = ref(null);
 const fullChat = ref(false);
 const ready = ref(false);
 
+function getServerUrl(): string {
+  // EXPERIMENT
+  const devServer = window.location.host === "localhost:3000";
+  let port = devServer ? 5055 : window.location.port;
+  let url = devServer ? "http://localhost:5055" : window.location.origin;
+  console.log(`%cServed on port ${port}`, "color: green; font-size: larger;");
+  return url;
+}
+
+function openSocket(): Promise<boolean> {
+  return new Promise(async (resolve) => {
+    let connectAttempts = 0;
+    if (socket.value === null) socket.value = io(getServerUrl());
+    while (socket.value.disconnected) {
+      connectAttempts++;
+      socket.value.connect();
+      console.log("%cAttempting to connect...", "color: gold;");
+      await sleep();
+      if (connectAttempts >= 5) resolve(false);
+    }
+    resolve(socket.value.connected);
+  });
+}
+
 async function startGame(player: Player) {
   playerName.value = player.name;
-
-  // EXPERIMENTAL Reveal the assigned port
-  let port = await fetch(`${window.location.origin}/port`)
-    .then((res) => res.json());
-  console.log(`Served on port ${port}`);
-  // if (socket.value === null) socket.value = io(`http://localhost:5055`);
-  // if (socket.value === null) socket.value = io(`http://localhost:${port}`);
-  if (socket.value === null) socket.value = io(`${window.location.origin}`);
-
-  if (socket.value?.disconnected) socket.value.connect();
-  while (socket.value.disconnected) {
-    console.log("%cConnecting...", "color: seagreen; font-weight: bold;");
-    await sleep();
+  let connected = await openSocket();
+  if (connected === false) {
+    console.log("%cfailed to connect.", "color: palevioletred;");
+    return;
   }
+  console.log("%cconnected.", "color: seagreen;");
   document.getElementById("splash")?.classList.add("hidden");
   ready.value = true;
   await sleep(2000);
@@ -85,11 +102,11 @@ function toggleChatSize() {
 
 body {
   --square-size: 40px;
-  --status-height: 40%;
+  --status-height: 30%;
   --status-bar: 1.5rem;
   --chat-input-height: 1.5rem;
   --nav-size: 2rem;
-  --board-top:  calc(var(--status-bar) + var(--chat-input-height));
+  --board-top: calc(var(--status-bar) + var(--chat-input-height));
   --board-height: calc(var(--square-size) * 10 + 15rem);
 
   --app-bkgd: hsl(0, 0%, 85%);
@@ -114,7 +131,7 @@ body {
   gap: 1em;
 }
 
-@media (min-height: 1000px) {
+@media (min-height: 500px) {
   body {
     --square-size: 4vh;
     --status-bar: 2.5rem;
@@ -126,31 +143,36 @@ body {
 
 @media (orientation: landscape) {
   body {
-    --square-size: 3vw;
+    --square-size: 3.5vw;
     --nav-size: 4vw;
+    --board-top: 0vh;
   }
 
-@media (min-height: 720px) {
-  body {
-    --square-size: 4vw;
-    --status-bar: 2.5rem;
-    --chat-input-height: 2.5rem;
-    font-size: large;
+  @media (min-width: 800px) {
+    body {
+      --square-size: 4vw;
+    }
   }
-}
+
   .play-area {
     float: right;
     margin-right: 5%;
   }
 }
 
-
-@media (max-width: 400px) and (orientation: landscape) {
+@media (max-width: 400px) {
   body {
+    --square-size: 30px;
+  }
+}
+
+/* @media (max-height: 500px) and (orientation: landscape) {
+  body {
+    --font-size: 
     --square-size: 30px;
     --nav-size: 3rem;
   }
-}
+} */
 
 .hidden {
   display: none;

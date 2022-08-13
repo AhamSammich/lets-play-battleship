@@ -37,7 +37,7 @@ nav {
   align-items: center;
   height: var(--nav-size);
   width: 100%;
-  background-color: rgba(51, 51, 51, 0.5);
+  background-color: hsla(0, 0%, 20%, 0.3);
   color: ghostwhite;
   box-shadow: 0.1em -0.1em 0.3em 0.1em hsla(0, 0%, 20%, 0.9);
   position: fixed;

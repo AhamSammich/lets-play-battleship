@@ -15,6 +15,7 @@ function createPlayer() {
 </script>
 
 <template>
+<!-- TODO Add a title -->
   <form class="splash" @submit.prevent="createPlayer()">
   <!-- Quick Play -->
   <!-- emit "start-game" w/ username -->
@@ -28,13 +29,14 @@ function createPlayer() {
     />
     <button type="submit">Join Game</button>
 
-  <!-- How To Play -->
+  <!-- FEATURE How To Play -->
   <!-- link to help page -->
 
-  <!-- Join Game -->
+  <!-- FEATURE Send Invite -->
 
-  <!-- Login -->
+  <!-- FEATURE Login -->
   </form>
+  <!-- TODO Add "Connecting..." splash -->
 </template>
 
 <style scoped>
@@ -42,6 +44,7 @@ function createPlayer() {
 .splash {
   height: 90vh;
   width: 90vw;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -73,5 +76,6 @@ button {
 button:hover {
   background-color: lightgoldenrodyellow;
   color: var(--app-blue);
+  cursor: pointer;
 }
 </style>

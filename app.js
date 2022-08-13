@@ -19,7 +19,6 @@ app.get("/", (req, res) => {
   res.sendFile("index.html");
 });
 
-// EXPERIMENTAL Reveal the assigned port
 app.get("/port", (req, res) => {
   res.send(`${port}`);
 });

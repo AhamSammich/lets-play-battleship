@@ -130,7 +130,8 @@ input {
   left: 0;
   bottom: var(--nav-size);
   background-color: ghostwhite;
-  border: 0.2rem inset whitesmoke;
+  border: none;
+  box-shadow: inset 0 0 0.2rem var(--app-black);
 }
 
 @media (orientation: portrait) {
@@ -139,6 +140,7 @@ input {
     bottom: calc(var(--nav-size) + var(--chat-input-height));
     transform-origin: bottom;
     transition: height 100ms linear, background-color 300ms linear;
+    padding: 0.5em;
   }
 
   .chat-log[expanded="false"] {
@@ -165,7 +167,7 @@ input {
   }
 
   .chat-log[expanded="false"] {
-    width: 50%;
+    width: calc(50% - var(--nav-size));
   }
   
   .chat-log[expanded="true"] {
@@ -174,7 +176,7 @@ input {
   }
 
   input {
-    width: calc(100% - var(--nav-size));
+    width: calc(50% - var(--nav-size));
     top: var(--status-bar);
     left: var(--nav-size);
   }

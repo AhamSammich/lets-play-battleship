@@ -68,14 +68,14 @@ function sendHitOrMiss(result: string, target: string): void {
   props.socket.emit("attack-result", resultData);
 }
 
-function disableBoard() {
-  const board: HTMLElement | null = document.querySelector(".board");
-  board?.style.setProperty("pointer-events", "none");
+function disableGrid() {
+  const grid: HTMLElement | null = document.querySelector(".grid");
+  grid?.style.setProperty("pointer-events", "none");
 }
 
-function enableBoard() {
-  const board: HTMLElement | null = document.querySelector(".board");
-  board?.style.removeProperty("pointer-events");
+function enableGrid() {
+  const grid: HTMLElement | null = document.querySelector(".grid");
+  grid?.style.removeProperty("pointer-events");
 }
 
 function sendStatus(shipName: string) {
@@ -88,7 +88,7 @@ function endGame() {
   props.socket.emit("game-over");
   gameResult.value = "lose";
   setTimeout(() => (hideStatus.value = false), 1500);
-  disableBoard();
+  disableGrid();
   props.socket.send(
     Message.format(`Congratulations! You've won!`, { from: "Status Report" })
   );
@@ -105,7 +105,7 @@ function endGame() {
 props.socket.on("player-turn", (id: string) => {
   if (gameResult.value !== null) return;
   myTurn.value = id === props.socket.id;
-  myTurn.value ? enableBoard() : disableBoard();
+  myTurn.value ? enableGrid() : disableGrid();
 });
 
 props.socket.on("incoming-result", (json: string) => {
@@ -124,7 +124,7 @@ props.socket.on("incoming-attack", (json) => {
 props.socket.on("victory", () => {
   gameResult.value = "win";
   setTimeout(() => (hideStatus.value = false), 1500);
-  disableBoard();
+  disableGrid();
   props.socket.emit(
     "message",
     Message.format(`You've lost... Better luck next time!`, { from: "Status Report" })
@@ -156,18 +156,20 @@ props.socket.on("victory", () => {
         <li>{{ x }}</li>
       </template>
     </ul>
-    <template v-for="y in 10">
-      <div class="row" :data-row="y">
-        <template v-for="x in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']">
-          <TargetSpace
-            :column="x"
-            :row="y"
-            :result="board.getSpaceById(`${x}-${y}`).result"
-            @attack="(id: string | null) => sendTargetId(id)"
-          />
-        </template>
-      </div>
-    </template>
+    <div class="grid">
+      <template v-for="y in 10">
+        <div class="row" :data-row="y">
+          <template v-for="x in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']">
+            <TargetSpace
+              :column="x"
+              :row="y"
+              :result="board.getSpaceById(`${x}-${y}`).result"
+              @attack="(id: string | null) => sendTargetId(id)"
+            />
+          </template>
+        </div>
+      </template>
+    </div>
     <ActionLog :actionCount="actionCount" :actions="actions" />
   </section>
 </template>
@@ -182,15 +184,22 @@ props.socket.on("victory", () => {
   position: relative;
 }
 
+@media (orientation: portrait) {
+  .board {
+    --board-top: var(--status-bar);
+  }
+}
+
 ul.header {
   width: 100%;
-  font-size: small;
+  /* height: var(--square-size); */
+  font-size: smaller;
   font-weight: bold;
   color: hsl(0, 0%, 20%);
-  padding-top: var(--board-top);
+  margin-top: var(--board-top);
   padding-bottom: 0.5em;
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(10, var(--square-size));
   list-style: none;
 }
 
@@ -202,7 +211,7 @@ ul.header {
 
 .row::after {
   content: attr(data-row);
-  font-size: small;
+  font-size: smaller;
   font-weight: bold;
   color: hsl(0, 0%, 20%);
   width: 2em;
@@ -211,5 +220,4 @@ ul.header {
   margin-right: -2.5em;
   vertical-align: middle;
 }
-
 </style>

@@ -42,15 +42,16 @@ function useSpecial({ target }: Event) {
   </ul>
 </template>
 
+// FIX Resize HP markers 
 <style scoped>
 * {
   list-style: none;
 }
 .fleet {
-  font-size: large;
+  font-size: larger;
   letter-spacing: 0.05em;
   width: 100%;
-  padding: 0.25em 1em;
+  padding: 0.25rem 1rem;
   background-color: hsl(0 0% 20% / 0.95);
   color: white;
   position: fixed;
@@ -67,7 +68,7 @@ function useSpecial({ target }: Event) {
 
 .ship {
   display: grid;
-  grid-template-columns: 25% 25% 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1em;
   text-align: left;
 }
@@ -89,14 +90,14 @@ function useSpecial({ target }: Event) {
   width: 1em;
   height: 0.5em;
   margin: 0.5em 0.25em;
-  background-color: palegreen;
-  box-shadow: 0.05em -0.05em 0.1em 0.05em lightseagreen;
+  background-color: hsl(120 93% 79%);
+  box-shadow: 0.05em -0.05em 0.1em 0.05em hsl(120 93% 79% / 0.5);
   border-radius: 0.1em;
 }
 
 @media (orientation: landscape) {
   .fleet {
-    width: 50%;
+    width: calc(50% - var(--nav-size));
     height: calc(100% - var(--status-bar) - var(--chat-input-height));
     top: calc(var(--status-bar) + var(--chat-input-height));
     left: var(--nav-size);
@@ -110,7 +111,6 @@ function useSpecial({ target }: Event) {
   .ship {
     font-size: larger;
     margin: 5vh 2vw;
-    grid-template-columns: 1fr 1fr;
   }
 }
 
