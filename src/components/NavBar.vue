@@ -12,9 +12,7 @@ function handleLogout(): void {
 }
 
 function toggleStatus(): void {
-  let btn = document.getElementById("status-bar");
-  console.log(btn);
-  btn?.click();
+  document.getElementById("status-bar")?.click();
 }
 </script>
 
@@ -22,7 +20,7 @@ function toggleStatus(): void {
   <nav>
     <img src="../assets/location-target-icon.png" alt="status" @pointerup="toggleStatus" />
     <img src="../assets/chat-box.png" alt="chat" @pointerup="$emit('toggle-chat')" />
-    <img src="../assets/settings-gear.png" alt="config" />
+    <!-- <img src="../assets/settings-gear.png" alt="config" /> -->
     <img
       src="../assets/logout-line-icon.png"
       alt="exit"

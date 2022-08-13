@@ -7,25 +7,21 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*",
     methods: ["GET", "POST"]
   }
 });
 
-const production = process.env.NODE_ENV === "production";
 const port = process.env.PORT || 5055;
-console.log(production);
 
-if (production) {
-  app.use(express.static("dist"));
-  app.get("/", (req, res) => {
-    res.sendFile("index.html");
-  });
-}
+app.use(express.static("dist"));
+app.get("/", (req, res) => {
+  res.sendFile("index.html");
+});
 
 // EXPERIMENTAL Reveal the assigned port
 app.get("/port", (req, res) => {
-  res.send(JSON.stringify({ port }));
+  res.send(`${port}`);
 });
 
 io.on("connection", (socket) => handleConnection(socket, io));

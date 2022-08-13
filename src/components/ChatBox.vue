@@ -128,7 +128,7 @@ input {
   padding: 0.25rem 1rem;
   position: fixed;
   left: 0;
-  bottom: var(--input-bottom);
+  bottom: var(--nav-size);
   background-color: ghostwhite;
   border: 0.2rem inset whitesmoke;
 }
@@ -136,7 +136,7 @@ input {
 @media (orientation: portrait) {
   .chat-log {
     max-height: calc(100% - var(--board-height));
-    bottom: calc(var(--input-bottom) + var(--input-height));
+    bottom: calc(var(--nav-size) + var(--chat-input-height));
     transform-origin: bottom;
     transition: height 100ms linear, background-color 300ms linear;
   }
@@ -147,7 +147,7 @@ input {
 
   .chat-log[expanded="true"] {
     max-height: unset;
-    height: calc(100% - var(--status-bar));
+    height: calc(100% - var(--status-bar) - var(--nav-size) - var(--chat-input-height));
     background-color: hsla(0, 0%, 20%, 0.85);
   }
 }

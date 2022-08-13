@@ -96,7 +96,7 @@ function useSpecial({ target }: Event) {
 
 @media (orientation: landscape) {
   .fleet {
-    width: calc(100% - var(--nav-size));
+    width: 50%;
     height: calc(100% - var(--status-bar) - var(--chat-input-height));
     top: calc(var(--status-bar) + var(--chat-input-height));
     left: var(--nav-size);
@@ -109,7 +109,8 @@ function useSpecial({ target }: Event) {
 
   .ship {
     font-size: larger;
-    margin: 2rem 1rem;
+    margin: 5vh 2vw;
+    grid-template-columns: 1fr 1fr;
   }
 }
 

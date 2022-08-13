@@ -20,12 +20,12 @@ async function startGame(player: Player) {
   playerName.value = player.name;
 
   // EXPERIMENTAL Reveal the assigned port
-  // let port = await fetch(`${window.location.origin}/port`)
-  //   .then((res) => res.json());
-  // console.log(`Served on port ${port}`);
-  if (socket.value === null) socket.value = io(`http://localhost:5055`);
+  let port = await fetch(`${window.location.origin}/port`)
+    .then((res) => res.json());
+  console.log(`Served on port ${port}`);
+  // if (socket.value === null) socket.value = io(`http://localhost:5055`);
   // if (socket.value === null) socket.value = io(`http://localhost:${port}`);
-  // if (socket.value === null) socket.value = io(`${window.location.origin}`);
+  if (socket.value === null) socket.value = io(`${window.location.origin}`);
 
   if (socket.value?.disconnected) socket.value.connect();
   while (socket.value.disconnected) {
@@ -87,7 +87,7 @@ body {
   --square-size: 40px;
   --status-height: 40%;
   --status-bar: 1.5rem;
-  --chat-input-height: 2rem;
+  --chat-input-height: 1.5rem;
   --nav-size: 2rem;
   --board-top:  calc(var(--status-bar) + var(--chat-input-height));
   --board-height: calc(var(--square-size) * 10 + 15rem);
@@ -114,30 +114,36 @@ body {
   gap: 1em;
 }
 
+@media (min-height: 1000px) {
+  body {
+    --square-size: 4vh;
+    --status-bar: 2.5rem;
+    --chat-input-height: 2.5rem;
+    --nav-size: 4vh;
+    font-size: large;
+  }
+}
+
 @media (orientation: landscape) {
+  body {
+    --square-size: 3vw;
+    --nav-size: 4vw;
+  }
+
+@media (min-height: 720px) {
   body {
     --square-size: 4vw;
     --status-bar: 2.5rem;
     --chat-input-height: 2.5rem;
-    --nav-size: 4vw;
     font-size: large;
   }
-
+}
   .play-area {
     float: right;
     margin-right: 5%;
   }
 }
 
-@media (min-height: 1000px) {
-  body {
-    --square-size: 4vh;
-    --status-bar: 2.5rem;
-    --chat-input-height: 2.5rem;
-    --nav-size: 4vw;
-    font-size: large;
-  }
-}
 
 @media (max-width: 400px) and (orientation: landscape) {
   body {

@@ -21,8 +21,8 @@ function getStatusMsg(): string {
 
 <template>
   <section id="status-bar" :class="playerTurn ? 'active' : ''" @click="$emit('toggle-status')">
-    <p>{{ playerName }} ( ID: {{ playerId }} )</p>
-    <p class="turn-status">{{ getStatusMsg() }}</p>
+    <p><strong>{{ playerName }}</strong> <em><small>ID: {{ playerId }}</small></em></p>
+    <p class="turn-status"><small>{{ getStatusMsg() }}</small></p>
   </section>
 </template>
 

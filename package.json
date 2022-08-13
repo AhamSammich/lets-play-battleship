@@ -11,7 +11,10 @@
     "build-only": "vue-tsc --noEmit && vite build",
     "move-assets": "mv dist/favicon.ico dist/assets/",
     "build": "npm-run-all build-only move-assets",
-    "preview": "npm-run-all build dev"
+    "preview": "npm-run-all build dev",
+    "image-push": "heroku container:push web -a battlefleet",
+    "image-release": "heroku container:release web -a battlefleet",
+    "deploy": "npm-run-all image-push image-release"
   },
   "dependencies": {
     "express": "^4.18.1",

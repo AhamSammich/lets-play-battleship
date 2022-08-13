@@ -32,7 +32,7 @@ div {
   background-color: var(--app-blue);
   border: calc(var(--square-size) * 0.01) solid var(--app-bkgd);
   border-collapse: collapse;
-  border-radius: calc(var(--square-size) * 0.03);
+  border-radius: 10%;
   cursor: pointer;
   display: flex;
   justify-content: center;

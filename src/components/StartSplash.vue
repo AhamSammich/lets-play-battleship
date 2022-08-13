@@ -10,7 +10,6 @@ function createPlayer() {
   let player = {
     "name": username
   }
-  console.log(username, player);
   emits("new-player", player);
 }
 </script>
