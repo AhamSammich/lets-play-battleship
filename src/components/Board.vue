@@ -174,11 +174,6 @@ props.socket.on("victory", () => {
 // ================================== // STYLE // ==================================
 
 <style>
-body {
-  --square-size: 40px;
-  --status-height: 40%;
-}
-
 .board {
   display: flex;
   flex-direction: column;
@@ -188,11 +183,10 @@ body {
 
 ul.header {
   width: 100%;
-  font-size: medium;
+  font-size: small;
   font-weight: bold;
   color: hsl(0, 0%, 20%);
-  padding-top: 1rem;
-  /* padding-top: var(--status-height); */
+  padding-top: var(--board-top);
   padding-bottom: 0.5em;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
@@ -207,7 +201,7 @@ ul.header {
 
 .row::after {
   content: attr(data-row);
-  font-size: large;
+  font-size: small;
   font-weight: bold;
   color: hsl(0, 0%, 20%);
   width: 2em;
@@ -216,4 +210,5 @@ ul.header {
   margin-right: -2.5em;
   vertical-align: middle;
 }
+
 </style>

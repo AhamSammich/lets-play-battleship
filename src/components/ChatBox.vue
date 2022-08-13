@@ -99,7 +99,6 @@ onUpdated(() => {
 .chat-log {
   font-size: large;
   width: 100%;
-  max-height: 15%;
   color: palegoldenrod;
   background-color: hsla(0, 0%, 20%, 0.7);
   padding: 0.5em 1em;
@@ -107,24 +106,54 @@ onUpdated(() => {
   flex-direction: column;
   gap: 0.2em;
   position: fixed;
-  bottom: calc(var(--input-bottom) + var(--input-height));
   overflow-y: scroll;
   text-align: left;
   list-style: none;
-  transition: height 100ms linear, background-color 300ms linear;
 }
+@media (orientation: portrait) {
+  .chat-log {
+    max-height: calc(100% - var(--board-height));
+    bottom: calc(var(--input-bottom) + var(--input-height));
+    transform-origin: bottom;
+    transition: height 100ms linear, background-color 300ms linear;
+  }
 
-@media (max-height: 600px) {
   .chat-log[expanded="false"] {
-    display: none;
+    height: fit-content;
+    /* transform: scaleX(1) scaleY(0); */
+  }
+
+  .chat-log[expanded="true"] {
+    max-height: unset;
+    height: calc(100% - var(--status-bar));
+    /* transform: scaleX(1) scaleY(1); */
+    background-color: hsla(0, 0%, 20%, 0.85);
   }
 }
 
-.chat-log[expanded="true"] {
-  max-height: unset;
-  height: calc(100vh - 5.5rem);
-  background-color: hsla(0, 0%, 20%, 0.85);
+@media (orientation: landscape) {
+  .chat-log {
+    height: calc(100% - var(--status-bar));
+    width: calc(100% - var(--nav-size));
+    top: calc(var(--status-bar) + var(--chat-input-height));
+    left: var(--nav-size);
+    bottom: 0;
+    transform-origin: left;
+    transition: transform 100ms linear, background-color 300ms linear;
+  }
+
+  .chat-log[expanded="false"] {
+    transform: scaleX(0) scaleY(1);
+    /* z-index: -1; */
+  }
+  
+  .chat-log[expanded="true"] {
+    background-color: hsla(0, 0%, 20%, 0.85);
+    max-height: unset;
+    transform: scaleX(1) scaleY(1);
+  }
 }
+
 
 ::after,
 ::before {
@@ -199,12 +228,20 @@ li[from="Status Report"] {
 
 input {
   width: 100%;
-  height: 2rem;
+  height: var(--chat-input-height);
   padding: 0.25rem;
   position: fixed;
   left: 0;
   bottom: var(--input-bottom);
   background-color: ghostwhite;
   border: 0.2rem inset whitesmoke;
+}
+
+@media (orientation: landscape) {
+  input {
+    width: calc(100% - var(--nav-size));
+    top: var(--status-bar);
+    left: var(--nav-size);
+  }
 }
 </style>

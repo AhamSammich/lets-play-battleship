@@ -89,10 +89,10 @@ function toggleFullLog() {
   background-color: hsla(0, 0%, 20%, 0.9);
   box-shadow: 0.1em -0.1em 0.3em 0.1em hsla(0, 0%, 20%, 0.9);
   border-radius: 3px;
-  height: 25em;
+  height: calc(var(--square-size) * 10);
   width: 100%;
   padding: 1em;
-  top: 2.75em;
+  top: calc(var(--board-top) + 1.5rem);
   overflow-y: scroll;
   list-style: none;
   transform-origin: bottom;

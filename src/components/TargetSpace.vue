@@ -25,17 +25,18 @@ function emitTargetId(): string | void {
 </template>
 
 <style scoped>
+
 div {
   width: var(--square-size);
-  aspect-ratio: 1/1;
+  height: var(--square-size);
   background-color: var(--app-blue);
-  border: 0.05em solid var(--app-bkgd);
-  border-radius: 0.3em;
+  border: calc(var(--square-size) * 0.01) solid var(--app-bkgd);
+  border-collapse: collapse;
+  border-radius: calc(var(--square-size) * 0.03);
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
 }
 
 div:hover {

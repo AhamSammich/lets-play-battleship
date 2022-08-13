@@ -8,14 +8,15 @@ const emits = defineEmits(["new-player"]);
 function createPlayer() {
   let username = (<HTMLInputElement>document.getElementById("user")).value;
   let player = {
-    name: username
+    "name": username
   }
+  console.log(username, player);
   emits("new-player", player);
 }
 </script>
 
 <template>
-  <form class="splash" @submit.prevent="createPlayer">
+  <form class="splash" @submit.prevent="createPlayer()">
   <!-- Quick Play -->
   <!-- emit "start-game" w/ username -->
     <input

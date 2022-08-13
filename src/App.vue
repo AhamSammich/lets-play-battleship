@@ -20,11 +20,12 @@ async function startGame(player: Player) {
   playerName.value = player.name;
 
   // EXPERIMENTAL Reveal the assigned port
-  let port = await fetch(`${window.location.origin}/port`)
-    .then(res => res.json());
-  console.log(port);
+  // let port = await fetch(`${window.location.origin}/port`)
+  //   .then((res) => res.json());
+  // console.log(`Served on port ${port}`);
+  if (socket.value === null) socket.value = io(`http://localhost:5055`);
   // if (socket.value === null) socket.value = io(`http://localhost:${port}`);
-  if (socket.value === null) socket.value = io(`${window.location.origin}`);
+  // if (socket.value === null) socket.value = io(`${window.location.origin}`);
 
   if (socket.value?.disconnected) socket.value.connect();
   while (socket.value.disconnected) {
@@ -33,23 +34,17 @@ async function startGame(player: Player) {
   }
   document.getElementById("splash")?.classList.add("hidden");
   ready.value = true;
-  await sleep(3000);
+  await sleep(2000);
   socket.value?.emit("player-ready", socket.value.id, player.name);
 }
 
 function leaveGame() {
-  // ready.value = false;
-  // socket.value?.disconnect();
-  // document.getElementById("splash")?.classList.remove("hidden");
-
-  // EXPERIMENTAL Refresh page on logout
   window.location.reload();
 }
 
 function toggleChatSize() {
   fullChat.value = !fullChat.value;
 }
-
 </script>
 
 <template>
@@ -60,7 +55,12 @@ function toggleChatSize() {
     <section class="play-area">
       <Board :player="playerName" :socket="socket!" :actions="[]" />
     </section>
-    <ChatBox :name="playerName" :socket="socket!" :expanded="fullChat" />
+    <ChatBox
+      :name="playerName"
+      :socket="socket!"
+      :expanded="fullChat"
+      @toggle-chat="toggleChatSize"
+    />
     <NavBar position="bottom" @toggle-chat="toggleChatSize" @logout="leaveGame" />
   </template>
 </template>
@@ -83,17 +83,32 @@ function toggleChatSize() {
 }
 
 body {
+  --square-size: 40px;
+  --status-height: 40%;
+  --status-bar: 1.5rem;
+  --chat-input-height: 2rem;
+  --nav-size: 2rem;
+  --board-top:  calc(var(--status-bar) + var(--chat-input-height));
+  --board-height: calc(var(--square-size) * 10 + 15rem);
+
   --app-bkgd: hsl(0, 0%, 85%);
   --app-blue: hsl(207 44% 49% / 0.9);
   --app-red: hsl(0 68% 42% / 0.9);
   --app-white: hsl(0 0% 96% / 0.9);
   --app-black: hsl(0 0% 20% / 0.9);
+
   font-size: 10px;
   width: clamp(320px, 100vw, 1000px);
   min-height: 100vh;
   background-color: var(--app-bkgd);
   display: grid;
   grid-template-rows: max-content 1fr max-content;
+}
+
+@media (max-width: 400px), (orientation: landscape) {
+  body {
+    --square-size: 30px;
+  }
 }
 
 .play-area {

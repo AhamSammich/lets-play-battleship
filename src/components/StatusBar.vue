@@ -39,11 +39,19 @@ section {
   position: fixed;
   top: 0vh;
   left: 0vw;
+  z-index: 5;
   width: 100%;
-  height: 1.5rem;
+  height: var(--status-bar);
   background-color: var(--color2);
   color: white;
   cursor: pointer;
+}
+
+@media (orientation: landscape) {
+  section {
+    width: calc(100% - var(--nav-size));
+    left: var(--nav-size);
+  }
 }
 
 section.active {

@@ -6,6 +6,7 @@ const props = defineProps<{
 const emits = defineEmits(["toggle-chat", "logout"]);
 
 function handleLogout(): void {
+  // TODO Create Confirm.vue component;
   let yes = confirm("Are you sure you want to leave?");
   if (yes) emits("logout");
 }
@@ -29,17 +30,29 @@ nav {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  height: 2rem;
+  height: var(--nav-size);
   width: 100%;
   background-color: rgba(51, 51, 51, 0.5);
   color: ghostwhite;
+  box-shadow: 0.1em -0.1em 0.3em 0.1em hsla(0, 0%, 20%, 0.9);
   position: fixed;
-  bottom: 0vh;
+  left: 0;
+  bottom: 0;
   padding: 0.25rem 0.5rem;
 }
 
+@media (orientation: landscape) {
+  nav {
+    width: var(--nav-size);
+    height: 100%;
+    flex-direction: column;
+    padding: 10% 0.25rem;
+  }
+}
+
 img {
-  height: inherit;
+  height: 2rem;
+  aspect-ratio: 1/1;
   transform: scale(0.75);
   cursor: pointer;
 }
