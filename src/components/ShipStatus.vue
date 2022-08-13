@@ -54,16 +54,20 @@ function useSpecial({ target }: Event) {
   background-color: hsl(0 0% 20% / 0.95);
   color: white;
   position: fixed;
-  top: 1.5rem;
-  left: 0vw;
+  top: var(--status-bar);
+  left: 0;
   transform-origin: top;
   transition: transform 100ms linear;
   z-index: 5;
 }
 
+[collapse="true"] {
+  transform: scaleY(0);
+}
+
 .ship {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 25% 25% 1fr;
   gap: 1em;
   text-align: left;
 }
@@ -90,7 +94,23 @@ function useSpecial({ target }: Event) {
   border-radius: 0.1em;
 }
 
-[collapse="true"] {
-  transform: scaleY(0);
+@media (orientation: landscape) {
+  .fleet {
+    width: calc(100% - var(--nav-size));
+    height: calc(100% - var(--status-bar) - var(--chat-input-height));
+    top: calc(var(--status-bar) + var(--chat-input-height));
+    left: var(--nav-size);
+    transform-origin: left;
+  }
+  
+  [collapse="true"] {
+    transform: scaleX(0);
+  }
+
+  .ship {
+    font-size: larger;
+    margin: 2rem 1rem;
+  }
 }
+
 </style>

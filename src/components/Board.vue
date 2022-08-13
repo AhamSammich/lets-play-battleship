@@ -148,6 +148,7 @@ props.socket.on("victory", () => {
     @ship-sunk="(shipName) => sendStatus(shipName)"
     @all-sunk="endGame()"
     @special=""
+    @click="() => (hideStatus = !hideStatus)"
   />
   <section :id="player" class="board">
     <ul class="header">

@@ -3,19 +3,26 @@ const props = defineProps<{
   position: "top" | "bottom" | "left" | "right";
 }>();
 
-const emits = defineEmits(["toggle-chat", "logout"]);
+const emits = defineEmits(["toggle-status", "toggle-chat", "logout"]);
 
 function handleLogout(): void {
   // TODO Create Confirm.vue component;
   let yes = confirm("Are you sure you want to leave?");
   if (yes) emits("logout");
 }
+
+function toggleStatus(): void {
+  let btn = document.getElementById("status-bar");
+  console.log(btn);
+  btn?.click();
+}
 </script>
 
 <template>
   <nav>
-    <img src="../assets/settings-gear.png" alt="config" />
+    <img src="../assets/location-target-icon.png" alt="status" @pointerup="toggleStatus" />
     <img src="../assets/chat-box.png" alt="chat" @pointerup="$emit('toggle-chat')" />
+    <img src="../assets/settings-gear.png" alt="config" />
     <img
       src="../assets/logout-line-icon.png"
       alt="exit"
@@ -38,7 +45,7 @@ nav {
   position: fixed;
   left: 0;
   bottom: 0;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 5%;
 }
 
 @media (orientation: landscape) {
@@ -46,13 +53,12 @@ nav {
     width: var(--nav-size);
     height: 100%;
     flex-direction: column;
-    padding: 10% 0.25rem;
+    padding: 5% 0.25rem;
   }
 }
 
 img {
-  height: 2rem;
-  aspect-ratio: 1/1;
+  height: var(--nav-size);
   transform: scale(0.75);
   cursor: pointer;
 }

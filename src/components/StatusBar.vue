@@ -20,14 +20,14 @@ function getStatusMsg(): string {
 </script>
 
 <template>
-  <section :class="playerTurn ? 'active' : ''" @pointerup="$emit('toggle-status')">
+  <section id="status-bar" :class="playerTurn ? 'active' : ''" @click="$emit('toggle-status')">
     <p>{{ playerName }} ( ID: {{ playerId }} )</p>
     <p class="turn-status">{{ getStatusMsg() }}</p>
   </section>
 </template>
 
 <style scoped>
-section {
+#status-bar {
   --color1: hsl(207 44% 49% / 0.9);
   --color2: hsl(0 0% 20% / 0.9);
   letter-spacing: 0.05em;
@@ -35,7 +35,7 @@ section {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 0.2rem 0.5rem;
+  padding: 0.2rem 1rem;
   position: fixed;
   top: 0vh;
   left: 0vw;
@@ -48,13 +48,13 @@ section {
 }
 
 @media (orientation: landscape) {
-  section {
+  #status-bar {
     width: calc(100% - var(--nav-size));
     left: var(--nav-size);
   }
 }
 
-section.active {
+#status-bar.active {
   background-color: var(--color1);
 }
 

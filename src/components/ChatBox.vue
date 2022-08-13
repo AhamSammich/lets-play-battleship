@@ -110,6 +110,29 @@ onUpdated(() => {
   text-align: left;
   list-style: none;
 }
+
+.chat-log::-webkit-scrollbar {
+  background-color: hsl(0, 0%, 20%);
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+.chat-log::-webkit-scrollbar-thumb {
+  background-color: lightgoldenrodyellow;
+}
+
+input {
+  font-size: inherit;
+  width: 100%;
+  height: var(--chat-input-height);
+  padding: 0.25rem 1rem;
+  position: fixed;
+  left: 0;
+  bottom: var(--input-bottom);
+  background-color: ghostwhite;
+  border: 0.2rem inset whitesmoke;
+}
+
 @media (orientation: portrait) {
   .chat-log {
     max-height: calc(100% - var(--board-height));
@@ -120,13 +143,11 @@ onUpdated(() => {
 
   .chat-log[expanded="false"] {
     height: fit-content;
-    /* transform: scaleX(1) scaleY(0); */
   }
 
   .chat-log[expanded="true"] {
     max-height: unset;
     height: calc(100% - var(--status-bar));
-    /* transform: scaleX(1) scaleY(1); */
     background-color: hsla(0, 0%, 20%, 0.85);
   }
 }
@@ -138,19 +159,24 @@ onUpdated(() => {
     top: calc(var(--status-bar) + var(--chat-input-height));
     left: var(--nav-size);
     bottom: 0;
+    padding-bottom: 2rem;
     transform-origin: left;
-    transition: transform 100ms linear, background-color 300ms linear;
+    transition: width 100ms linear, background-color 300ms linear;
   }
 
   .chat-log[expanded="false"] {
-    transform: scaleX(0) scaleY(1);
-    /* z-index: -1; */
+    width: 50%;
   }
   
   .chat-log[expanded="true"] {
     background-color: hsla(0, 0%, 20%, 0.85);
     max-height: unset;
-    transform: scaleX(1) scaleY(1);
+  }
+
+  input {
+    width: calc(100% - var(--nav-size));
+    top: var(--status-bar);
+    left: var(--nav-size);
   }
 }
 
@@ -171,6 +197,7 @@ li {
   color: white;
   background-color: var(--app-black);
   border-radius: 0.5em;
+  margin-bottom: 1rem;
 }
 
 li::after {
@@ -214,34 +241,5 @@ li[from="Me"]::before {
 li[from="Status Report"] {
   color: white;
   background-color: var(--app-red);
-}
-
-.chat-log::-webkit-scrollbar {
-  background-color: hsl(0, 0%, 20%);
-  width: 0.5rem;
-  height: 0.5rem;
-}
-
-.chat-log::-webkit-scrollbar-thumb {
-  background-color: lightgoldenrodyellow;
-}
-
-input {
-  width: 100%;
-  height: var(--chat-input-height);
-  padding: 0.25rem;
-  position: fixed;
-  left: 0;
-  bottom: var(--input-bottom);
-  background-color: ghostwhite;
-  border: 0.2rem inset whitesmoke;
-}
-
-@media (orientation: landscape) {
-  input {
-    width: calc(100% - var(--nav-size));
-    top: var(--status-bar);
-    left: var(--nav-size);
-  }
 }
 </style>

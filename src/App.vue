@@ -44,6 +44,7 @@ function leaveGame() {
 
 function toggleChatSize() {
   fullChat.value = !fullChat.value;
+  if (fullChat.value === true) document.getElementById("chat-input")?.focus();
 }
 </script>
 
@@ -98,17 +99,11 @@ body {
   --app-black: hsl(0 0% 20% / 0.9);
 
   font-size: 10px;
-  width: clamp(320px, 100vw, 1000px);
+  width: clamp(320px, 100vw, 100vw);
   min-height: 100vh;
   background-color: var(--app-bkgd);
   display: grid;
   grid-template-rows: max-content 1fr max-content;
-}
-
-@media (max-width: 400px), (orientation: landscape) {
-  body {
-    --square-size: 30px;
-  }
 }
 
 .play-area {
@@ -117,6 +112,38 @@ body {
   justify-content: center;
   align-items: center;
   gap: 1em;
+}
+
+@media (orientation: landscape) {
+  body {
+    --square-size: 4vw;
+    --status-bar: 2.5rem;
+    --chat-input-height: 2.5rem;
+    --nav-size: 4vw;
+    font-size: large;
+  }
+
+  .play-area {
+    float: right;
+    margin-right: 5%;
+  }
+}
+
+@media (min-height: 1000px) {
+  body {
+    --square-size: 4vh;
+    --status-bar: 2.5rem;
+    --chat-input-height: 2.5rem;
+    --nav-size: 4vw;
+    font-size: large;
+  }
+}
+
+@media (max-width: 400px) and (orientation: landscape) {
+  body {
+    --square-size: 30px;
+    --nav-size: 3rem;
+  }
 }
 
 .hidden {
