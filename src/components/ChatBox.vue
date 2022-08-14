@@ -9,9 +9,7 @@ const props = defineProps<{
   expanded: boolean;
 }>();
 
-const emits = defineEmits([
-  "toggle-chat"
-]);
+const emits = defineEmits(["toggle-chat"]);
 
 const msgCount = ref(0);
 const messages: Ref<string[]> = ref([]);
@@ -22,13 +20,12 @@ function registerPlayer(id: string) {
   players[id] = id;
 }
 
-function sendMessage() {
-  let input = <HTMLInputElement>document.getElementById("chat-input");
-  if (input.value == null) return;
-  let json: string = Message.format(input.value, { from: props.name });
+function sendMessage(e: { target: any }): void {
+  if (e.target == null) return;
+  let json: string = Message.format(e.target.value, { "from": props.name });
   props.socket.send(json);
   updateChat(json);
-  input.value = "";
+  e.target.value = "";
 }
 
 props.socket.on("message-received", (json: string) => {
@@ -44,11 +41,6 @@ props.socket.on("disconnect", (reason) => {
   updateChat(
     Message.format(`Disconnected from server. ( Reason: ${reason} )`, { from: "Server" })
   );
-  if (reason !== "io client disconnect") props.socket.connect();
-});
-
-props.socket.on("reconnect_attempt", () => {
-  updateChat(Message.format("Reconnecting to server...", { from: "Server" }));
 });
 
 props.socket.on("connect", () => {
@@ -69,7 +61,12 @@ onUpdated(() => {
 
 <template>
   <section id="chat">
-    <ul class="chat-log" :count="msgCount" :expanded="expanded" @pointerup="$emit('toggle-chat')">
+    <ul
+      class="chat-log"
+      :count="msgCount"
+      :expanded="expanded"
+      @pointerup="$emit('toggle-chat')"
+    >
       <template v-for="i in messages?.length">
         <li
           :data-time="Message.parse(messages?.[i - 1], 'timestamp')"
@@ -84,7 +81,7 @@ onUpdated(() => {
         type="text"
         id="chat-input"
         placeholder="Send a message"
-        @change="sendMessage()"
+        @change="sendMessage"
       />
     </div>
   </section>
@@ -169,7 +166,7 @@ input {
   .chat-log[expanded="false"] {
     width: calc(50% - var(--nav-size));
   }
-  
+
   .chat-log[expanded="true"] {
     background-color: hsla(0, 0%, 20%, 0.85);
     max-height: unset;
@@ -181,7 +178,6 @@ input {
     left: var(--nav-size);
   }
 }
-
 
 ::after,
 ::before {

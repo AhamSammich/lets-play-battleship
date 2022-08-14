@@ -4,7 +4,7 @@ import ActionLog from "./ActionLog.vue";
 import StatusBar from "./StatusBar.vue";
 import ShipStatus from "./ShipStatus.vue";
 import { reactive, ref, Ref, onMounted } from "vue";
-import { Socket } from "socket.io-client";
+import type { Socket } from "socket.io-client";
 import { Message } from "../utils";
 import { Fleet, Ship } from "../ship";
 import { Board } from "../board";

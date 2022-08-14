@@ -6,7 +6,8 @@
 const emits = defineEmits(["new-player"]);
 
 function createPlayer() {
-  let username = (<HTMLInputElement>document.getElementById("user")).value;
+  // @ts-ignore
+  let username = document.getElementById("user")?.value;
   let player = {
     "name": username
   }

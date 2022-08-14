@@ -7,6 +7,7 @@ import { Socket, io } from "socket.io-client";
 import { Ref, ref } from "vue";
 import { sleep } from "./utils";
 import { rejects } from "assert";
+import bodyParser from "body-parser";
 
 interface Player {
   name: string;
@@ -19,7 +20,7 @@ const ready = ref(false);
 
 function getServerUrl(): string {
   // EXPERIMENT
-  const devServer = window.location.host === "localhost:3000";
+  const devServer = window.location.host === "localhost:5173";
   let port = devServer ? 5055 : window.location.port;
   let url = devServer ? "http://localhost:5055" : window.location.origin;
   console.log(`%cServed on port ${port}`, "color: green; font-size: larger;");
@@ -27,27 +28,40 @@ function getServerUrl(): string {
 }
 
 function openSocket(): Promise<boolean> {
-  return new Promise(async (resolve) => {
+  return new Promise(async (resolve, reject) => {
+    let style = document.body.style;
     let connectAttempts = 0;
     if (socket.value === null) socket.value = io(getServerUrl());
     while (socket.value.disconnected) {
+      // TODO Add a loader element to show progress
+      style.cursor = "progress";
       connectAttempts++;
       socket.value.connect();
       console.log("%cAttempting to connect...", "color: gold;");
       await sleep();
-      if (connectAttempts >= 5) resolve(false);
+      if (connectAttempts >= 5) {
+        style.removeProperty("cursor");
+        reject(new Error("Multiple failures to connect."));
+        break;
+      }
     }
+    style.removeProperty("cursor");
+    socket.value.once("disconnect", async (reason) => {
+      if (reason !== "io client disconnect") await openSocket();
+    });
     resolve(socket.value.connected);
   });
 }
 
 async function startGame(player: Player) {
   playerName.value = player.name;
-  let connected = await openSocket();
-  if (connected === false) {
-    console.log("%cfailed to connect.", "color: palevioletred;");
-    return;
+  let connected = false;
+  try {
+    connected = await openSocket();
+  } catch (err: Error) {
+    console.error(err.message);
   }
+  if (connected === false) return;
   console.log("%cconnected.", "color: seagreen;");
   document.getElementById("splash")?.classList.add("hidden");
   ready.value = true;

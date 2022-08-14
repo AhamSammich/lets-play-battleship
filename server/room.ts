@@ -1,9 +1,11 @@
 class Room {
-  static opened = {};
+  static opened: Record<string, Room> = {};
   capacity = 2;
-  users = {};
+  users: Record<string, string> = {};
+  id: string;
+  host: string;
 
-  constructor(hostUser, id) {
+  constructor(hostUser: string, id: string) {
     this.id = id;
     this.host = hostUser;
     this.users[hostUser] = hostUser;
@@ -29,7 +31,7 @@ class Room {
     return this.count === this.capacity;
   }
 
-  getUser(userId) {
+  getUser(userId: string) {
     return this.users[userId];
   }
 
@@ -38,11 +40,11 @@ class Room {
     this.host = this.occupants[0];
   }
 
-  join(userId) {
+  join(userId: string) {
     if (this.isAvailable) this.users[userId] = userId;
   }
 
-  leave(userId) {
+  leave(userId: string) {
     try {
       delete this.users[userId];
     } catch (err) {
@@ -56,19 +58,22 @@ class Room {
     return Object.keys(this.opened);
   }
 
-  static getAvailableKey() {
-    return this.getAllKeys().find((key) => this.opened[key].isAvailable);
+  static getAvailableKey(): string | void {
+    return this.getAllKeys().find(
+      (key: string) => this.opened[key].isAvailable
+    );
   }
 
   static findAvailable() {
-    return this.opened[this.getAvailableKey()];
+    let key = this.getAvailableKey();
+    return key ? this.opened[key] : null;
   }
 
-  static findById(id) {
+  static findById(id: string) {
     return this.opened[id];
   }
 
-  static getNewId() {
+  static getNewId(): string {
     let i = 1;
     let newId = `Room ${i}`;
     while (this.getAllKeys().includes(newId)) {
@@ -79,20 +84,15 @@ class Room {
     return newId;
   }
 
-  static open(hostUser, id = undefined) {
-    id = id || this.getNewId();
+  static open(hostUser: string): Room {
+    let id = this.getNewId();
     let room = this.findById(id);
-    if (room) {
-      return console.warn(
-        "This Room ID already exists. \nJoin the existing room or specify a different ID."
-      );
-    }
     room = new Room(hostUser, id);
     this.opened[id] = room;
     return room;
   }
 
-  static close(id) {
+  static close(id: string) {
     try {
       delete this.opened[id];
     } catch (err) {
@@ -101,6 +101,4 @@ class Room {
   }
 }
 
-module.exports = {
-  Room,
-};
+export default Room;

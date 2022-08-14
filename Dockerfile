@@ -3,10 +3,10 @@ FROM node:18.7.0
 ENV NODE_ENV=production
 
 WORKDIR /app
-COPY ["package.json", "package-lock.json*", "./"]
+COPY ["package*.json", "./"]
 RUN npm install --omit=dev
 
-COPY ["app.js","./"]
+COPY ["app.ts","./"]
 COPY ["server","./server"]
 COPY ["dist","./dist"]
 
