@@ -42,7 +42,6 @@ function useSpecial({ target }: Event) {
   </ul>
 </template>
 
-// FIX Resize HP markers 
 <style scoped>
 * {
   list-style: none;

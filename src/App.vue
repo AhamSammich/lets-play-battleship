@@ -6,8 +6,6 @@ import ChatBox from "./components/ChatBox.vue";
 import { Socket, io } from "socket.io-client";
 import { Ref, ref } from "vue";
 import { sleep } from "./utils";
-import { rejects } from "assert";
-import bodyParser from "body-parser";
 
 interface Player {
   name: string;
@@ -19,8 +17,7 @@ const fullChat = ref(false);
 const ready = ref(false);
 
 function getServerUrl(): string {
-  // EXPERIMENT
-  const devServer = window.location.host === "localhost:5173";
+  const devServer = window.location.host === "localhost:3000";
   let port = devServer ? 5055 : window.location.port;
   let url = devServer ? "http://localhost:5055" : window.location.origin;
   console.log(`%cServed on port ${port}`, "color: green; font-size: larger;");
@@ -33,7 +30,6 @@ function openSocket(): Promise<boolean> {
     let connectAttempts = 0;
     if (socket.value === null) socket.value = io(getServerUrl());
     while (socket.value.disconnected) {
-      // TODO Add a loader element to show progress
       style.cursor = "progress";
       connectAttempts++;
       socket.value.connect();
@@ -64,6 +60,7 @@ async function startGame(player: Player) {
   if (connected === false) return;
   console.log("%cconnected.", "color: seagreen;");
   document.getElementById("splash")?.classList.add("hidden");
+  StartSplash
   ready.value = true;
   await sleep(2000);
   socket.value?.emit("player-ready", socket.value.id, player.name);
@@ -98,8 +95,7 @@ function toggleChatSize() {
 </template>
 
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,600;1,400&display=swap");
-
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,600;0,800;0,900;1,300;1,400;1,600;1,800;1,900&display=swap');
 * {
   box-sizing: border-box;
   margin: 0;
