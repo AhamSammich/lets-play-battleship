@@ -2,7 +2,7 @@ import express from "express";
 import type { Response, Application } from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import handleConnection from "./server/server";
+import handleConnection from "./server";
 
 const app: Application = express();
 const server = createServer(app);
