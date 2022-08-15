@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Socket } from "socket.io-client";
 import { ref, Ref, onUpdated } from "vue";
-import { Message } from "../utils";
+import { Message } from "../scripts/utils";
 
 const props = defineProps<{
   name?: string;

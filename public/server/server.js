@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const utils_1 = require("../src/utils");
+const utils_1 = require("./utils");
 const room_1 = __importDefault(require("./room"));
 function joinRoom(socketId) {
     let room = room_1.default.findAvailable();
@@ -64,4 +64,3 @@ function handleConnection(socket, server) {
     });
 }
 exports.default = handleConnection;
-//# sourceMappingURL=server.js.map

@@ -8,14 +8,15 @@
     "dev": "nodemon app.ts",
     "hmr": "vite",
     "dev-server": "npm-run-all -p dev hmr",
-    "preview": "npm-run-all build start",
-    "compile": "cd server && tsc && cd ..",
-    "build-only": "npm run compile && vue-tsc --noEmit && vite build",
-    "build-image": "build && docker build -t battlefleet:latest .",
-    "build": "npm-run-all build-only move-assets",
-    "image": "docker build .",
+
+    "compile": "tsc -b tsconfig.server.json && vue-tsc --noEmit && vite build",
     "move-assets": "mv dist/favicon.ico dist/assets/",
-    "image-push": "heroku container:push web -a battlefleet",
+    "build": "npm-run-all compile move-assets",
+    "preview": "npm-run-all build start",
+
+    "image-build": "docker build -t battlefleet:latest .",
+    "image-test": "docker run -p 5055:5055 test/battlefleet:latest",
+    "image-push": "heroku container:login && heroku container:push web -a battlefleet",
     "image-release": "heroku container:release web -a battlefleet",
     "deploy": "npm-run-all image-push image-release"
   },

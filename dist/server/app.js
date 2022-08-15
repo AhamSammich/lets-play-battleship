@@ -24,4 +24,3 @@ io.on("connection", (socket) => (0, server_1.default)(socket, io));
 server.listen(port, () => {
     console.log(`App is running at 'http://localhost:${port}'...`);
 });
-//# sourceMappingURL=app.js.map

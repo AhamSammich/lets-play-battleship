@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ship, Fleet } from "../ship";
+import { Ship, Fleet } from "../scripts/ship";
 const props = defineProps<{
   fleet: Fleet;
   collapse: boolean;

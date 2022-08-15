@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { checkSuccess, chooseRandom, sleep } from "../utils";
+import { checkSuccess, chooseRandom, sleep } from "../scripts/utils";
 export interface Props {
   title?: string;
 }
