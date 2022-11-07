@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Message } from "../utils";
+import { Message } from "../scripts/utils";
 
 const props = defineProps<{
   actionCount: number;

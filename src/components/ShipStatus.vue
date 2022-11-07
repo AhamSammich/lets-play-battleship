@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ship, Fleet } from "../ship";
+import { Ship, Fleet } from "../scripts/ship";
 const props = defineProps<{
   fleet: Fleet;
   collapse: boolean;
@@ -26,8 +26,9 @@ function useSpecial({ target }: Event) {
 
 <template>
   <ul class="fleet" :collapse="collapse">
+    <h5>Player Fleet Status</h5>
     <template v-for="ship in fleet.ships">
-      <li class="ship">
+      <li class="ship" :id="ship.isSunk ? '' : ship.name">
         <p :class="ship.isSunk ? 'sunk' : ''">{{ ship.name }}</p>
         <template v-if="checkSunk(ship)">
           <p class="sunk">SUNK</p>
@@ -42,7 +43,6 @@ function useSpecial({ target }: Event) {
   </ul>
 </template>
 
-// FIX Resize HP markers 
 <style scoped>
 * {
   list-style: none;
@@ -71,6 +71,38 @@ function useSpecial({ target }: Event) {
   grid-template-columns: 1fr 1fr;
   gap: 1em;
   text-align: left;
+  position: relative;
+}
+
+*::before {
+  display: block;
+  position: absolute;
+  z-index: -1;
+}
+
+#Carrier::before {
+  content: url("../assets/Carrier.png");
+  transform: translate(-5%, 20%) scale(0.8);
+}
+
+#Cruiser::before {
+  content: url("../assets/Cruiser.png");
+  transform: translate(10%, 70%);
+}
+
+#Destroyer::before {
+  content: url("../assets/Destroyer.png");
+  transform: translate(10%, 80%);
+}
+
+#Submarine::before {
+  content: url("../assets/Submarine.png");
+  transform: translate(-5%, 35%) scale(0.75);
+}
+
+#Frigate::before {
+  content: url("../assets/Frigate.png");
+  transform: translate(25%, 80%);
 }
 
 .sunk {
@@ -84,14 +116,15 @@ function useSpecial({ target }: Event) {
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  position: relative;
 }
 
 .hp > * {
   width: 1em;
   height: 0.5em;
-  margin: 0.5em 0.25em;
-  background-color: hsl(120 93% 79%);
-  box-shadow: 0.05em -0.05em 0.1em 0.05em hsl(120 93% 79% / 0.5);
+  margin: 1.5em 0.2em;
+  background-color: hsl(120 93% 79% / 1);
+  box-shadow: 0.02em -0.02em 0.1em 0.05em hsl(120 93% 79% / 0.5);
   border-radius: 0.1em;
 }
 
@@ -109,7 +142,7 @@ function useSpecial({ target }: Event) {
   }
 
   .ship {
-    font-size: larger;
+    font-size: large;
     margin: 5vh 2vw;
   }
 }

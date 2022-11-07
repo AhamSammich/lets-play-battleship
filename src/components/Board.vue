@@ -5,9 +5,9 @@ import StatusBar from "./StatusBar.vue";
 import ShipStatus from "./ShipStatus.vue";
 import { reactive, ref, Ref, onMounted } from "vue";
 import type { Socket } from "socket.io-client";
-import { Message } from "../utils";
-import { Fleet, Ship } from "../ship";
-import { Board } from "../board";
+import { Message } from "../scripts/utils";
+import { Fleet, Ship } from "../scripts/ship";
+import { Board } from "../scripts/board";
 
 const props = defineProps<{
   player: string;

@@ -1,5 +1,5 @@
 import type { Socket, Server } from "socket.io";
-import { Message } from "../src/utils";
+import { Message } from "./utils";
 import Room from "./room";
 
 function joinRoom(socketId: string): string {

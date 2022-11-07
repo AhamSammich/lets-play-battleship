@@ -24,3 +24,4 @@ dist-ssr
 
 tests
 jest.config.js
+tsBuildInfo

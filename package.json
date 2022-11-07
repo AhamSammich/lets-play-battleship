@@ -4,15 +4,19 @@
   "version": "0.0.0",
   "scripts": {
     "test": "jest",
-    "start": "ts-node app.ts",
+    "start": "node dist/server/app.js",
     "dev": "nodemon app.ts",
     "hmr": "vite",
     "dev-server": "npm-run-all -p dev hmr",
-    "build-only": "vue-tsc --noEmit && vite build",
+
+    "compile": "tsc -b tsconfig.server.json && vue-tsc --noEmit && vite build",
     "move-assets": "mv dist/favicon.ico dist/assets/",
-    "build": "npm-run-all build-only move-assets",
-    "preview": "npm-run-all build dev",
-    "image-push": "heroku container:push web -a battlefleet",
+    "build": "npm-run-all compile move-assets",
+    "preview": "npm-run-all build start",
+
+    "image-build": "docker build -t battlefleet:latest .",
+    "image-test": "docker run -p 5055:5055 test/battlefleet:latest",
+    "image-push": "heroku container:login && heroku container:push web -a battlefleet",
     "image-release": "heroku container:release web -a battlefleet",
     "deploy": "npm-run-all image-push image-release"
   },

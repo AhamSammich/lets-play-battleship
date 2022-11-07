@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "NodeNext",
+    "moduleResolution": "Node",
+    "outDir": "public/server",
+    "declarationDir": "./types",
+    "tsBuildInfoFile": "./tsBuildInfo",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
+    "rootDir": "server"
+  },
+  "include": ["server/*.ts"]
+}
