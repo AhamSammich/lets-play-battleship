@@ -12,7 +12,7 @@ const emits = defineEmits(["new-player"]);
 
 async function animateTitle() {
   const titleElem = document.getElementById("title");
-  const img = document.querySelector("img");
+  const img = document.querySelector("#sub");
   if (titleElem == null) return;
   img?.classList.add("loading");
   const letters = Array.from(titleElem.querySelectorAll("span"));
@@ -42,7 +42,7 @@ function createPlayer() {
         <template v-for="char in title">
           <span :data-i="title.indexOf(char)">{{ char }}</span>
         </template>
-        <img src="../assets/submarine-icon.png" alt="submarine image" />
+        <img id="sub" src="../assets/submarine-icon.png" alt="submarine image" />
       </h1>
       <p id="sub-title">A Vue.js/TypeScript Project</p>
     </div>
@@ -66,10 +66,35 @@ function createPlayer() {
 
     <!-- FEATURE Login -->
   </form>
+  <footer>
+    <a href="https://www.github.com/ahamsammich/battlefleet">
+      <img id="github" src="../assets/GitHub-Mark-64px.png" alt="Link to GitHub">
+      <p>Follow this project on GitHub</p>
+    </a>
+  </footer>
   <!-- TODO Add "Connecting..." splash -->
 </template>
 
 <style scoped>
+footer {
+  position: absolute;
+  bottom: 5px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+a, a>p {
+  text-decoration: none;
+  font-size: smaller;
+}
+
+#github {
+  width: 40px;
+  opacity: 0.8;
+}
+
 .splash {
   height: 90vh;
   width: 90vw;
@@ -103,7 +128,7 @@ p {
   color: var(--app-black);
 }
 
-img {
+img#sub {
   width: 20rem;
   position: absolute;
   opacity: 0.15;
@@ -164,18 +189,13 @@ button:hover {
   cursor: pointer;
 }
 
-#title-box,
-input,
-button {
+*:not(img#sub) {
   animation: fadeIn 2s ease-in-out;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }
 
@@ -188,7 +208,7 @@ button {
     white-space: inherit;
   }
 
-  img {
+  img#sub {
     transform: translate(-50%, -50%);
   }
 }
