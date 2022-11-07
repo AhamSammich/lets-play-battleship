@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build and push to DockerHub
 
 on:
   push:
@@ -13,6 +13,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    - name: Login to docker hub
+      uses: actions-hub/docker/login@master
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build :latest
+      run: docker build -t ${GITHUB_REPOSITORY}:latest .
+
+    - name: Push to docker hub :latest
+      uses: actions-hub/docker@master
+      with:
+        args: push ${GITHUB_REPOSITORY}:latest
