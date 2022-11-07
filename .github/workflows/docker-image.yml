@@ -20,7 +20,7 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build :latest
-      run: docker build -t battlefleet:latest .
+      run: docker build --file Dockerfile -t battlefleet:latest .
 
     - name: Push to docker hub :latest
       uses: actions-hub/docker@master
