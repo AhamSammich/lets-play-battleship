@@ -6,8 +6,8 @@ const props = defineProps<{
 }>()
 
 const shareData = {
-    title: "Let's Play Battleship",
-    text: `${props.senderName || 'A friend'} has challenged you to Battleship!`,
+    title: "Let's Play Battleship!",
+    text: `${props.senderName || 'A friend'} has challenged you to a game!`,
     url: window.location.href,
 }
 
