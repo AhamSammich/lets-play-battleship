@@ -1,11 +1,6 @@
-BATTLE FLEET
+LET'S PLAY BATTLE SHIP!
 
-ABOUT THIS PROJECT
-The Goal
-My goal is to use this project to learn the fundamentals of the TypeScript language and Vue framework.
-Additionally, I hope to create a multiplayer online experience while learning how to use web sockets and auth APIs.
-
-Scan below or [click here](https://battlefleet.up.railway.app) to check it out!
+Scan below or [click here](https://play.battleship.up.railway.app) to check it out!
 
 ![SCAN ME](public/QR-BattleFleet.png)
 
