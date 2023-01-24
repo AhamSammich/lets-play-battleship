@@ -9,14 +9,11 @@
     "hmr": "vite",
     "dev-server": "npm-run-all -p dev hmr",
     "compile": "tsc -b tsconfig.server.json && vue-tsc --noEmit && vite build",
-    "move-assets": "mv dist/favicon.ico dist/assets/",
+    "move-assets": "mv dist/favicon.* dist/assets/",
     "build": "npm-run-all compile move-assets",
     "preview": "npm-run-all build start",
-    "image-build": "docker build -t battlefleet:latest .",
-    "image-test": "docker run -p 5055:5055 test/battlefleet:latest",
-    "image-push": "heroku container:login && heroku container:push web -a battlefleet",
-    "image-release": "heroku container:release web -a battlefleet",
-    "deploy": "npm-run-all image-push image-release"
+    "image-build": "docker build -t lp-battleship:latest .",
+    "image-test": "docker run -p 5055:5055 test/lp-battleship:latest"
   },
   "dependencies": {
     "@iconify-prerendered/vue-mdi": "^0.18.1673788155",
