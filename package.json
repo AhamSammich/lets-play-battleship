@@ -1,5 +1,5 @@
 {
-  "name": "ts-battlefleet",
+  "name": "lp-battleship",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -8,12 +8,10 @@
     "dev": "nodemon app.ts",
     "hmr": "vite",
     "dev-server": "npm-run-all -p dev hmr",
-
     "compile": "tsc -b tsconfig.server.json && vue-tsc --noEmit && vite build",
     "move-assets": "mv dist/favicon.ico dist/assets/",
     "build": "npm-run-all compile move-assets",
     "preview": "npm-run-all build start",
-
     "image-build": "docker build -t battlefleet:latest .",
     "image-test": "docker run -p 5055:5055 test/battlefleet:latest",
     "image-push": "heroku container:login && heroku container:push web -a battlefleet",
@@ -21,10 +19,12 @@
     "deploy": "npm-run-all image-push image-release"
   },
   "dependencies": {
+    "@iconify-prerendered/vue-mdi": "^0.18.1673788155",
     "express": "^4.18.1",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
-    "vue": "^3.2.37"
+    "vue": "^3.2.37",
+    "vue-meta": "^3.0.0-alpha.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",

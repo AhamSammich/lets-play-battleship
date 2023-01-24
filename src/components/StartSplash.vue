@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { checkSuccess, chooseRandom, sleep } from "../scripts/utils";
+import SendInvite from "./SendInvite.vue";
+
 export interface Props {
   title?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  title: "BATTLE FLEET",
+  title: "BATTLESHIP",
 });
 
 const emits = defineEmits(["new-player"]);
@@ -23,9 +25,13 @@ async function animateTitle() {
   }
 }
 
-function createPlayer() {
+function getUsername(): string {
   // @ts-ignore
-  let username = document.getElementById("user")?.value;
+  return document.getElementById("user")?.value;
+}
+
+function createPlayer() {
+  let username = getUsername();
   if (username == null) return;
   animateTitle();
   let player = {
@@ -39,12 +45,12 @@ function createPlayer() {
   <form class="splash" @submit.prevent="createPlayer()">
     <div id="title-box">
       <h1 id="title">
+        <span id="sub-title">Let's Play!</span>
         <template v-for="char in title">
           <span :data-i="title.indexOf(char)">{{ char }}</span>
         </template>
         <img id="sub" src="../assets/submarine-icon.png" alt="submarine image" />
       </h1>
-      <p id="sub-title">A Vue.js/TypeScript Project</p>
     </div>
     <!-- Quick Play -->
     <!-- emit "start-game" w/ username -->
@@ -63,6 +69,9 @@ function createPlayer() {
     <!-- link to help page -->
 
     <!-- FEATURE Send Invite -->
+    <button @click.prevent>
+      <SendInvite :sender-name="getUsername()"/>
+    </button>
 
     <!-- FEATURE Login -->
   </form>
@@ -125,6 +134,13 @@ h1 {
 
 p {
   font-size: medium;
+  color: var(--app-black);
+}
+
+#sub-title {
+  display: block;
+  font-size: 24px;
+  font-style: italic;
   color: var(--app-black);
 }
 
